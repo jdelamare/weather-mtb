@@ -10,9 +10,15 @@ Need to learn how to serve these out of Cloudfront or S3 buckets.
 
 Currently working through React tutorials and building the API out simultaneously.
 
-### Backend
-Chalice application- not providing any static files from this (as opposed to the dynamoDB guestbook in my other repo). Here we've just got a series of routes that can be hit to further get information from MTBProject. Currently wondering why I don't just hit everything from the React app. Presumably having this backend will be good for combining other APIs (Google Maps and geolocation API), before providing curated data to the frontend.
+#### Geolocation
+Need to handle the error if the user refuses to provide tracking information.
 
+
+### Backend
+Chalice application- not providing any static files from this (as opposed to the 
+dynamoDB guestbook in my other repo). Here we've just got a series of routes that can
+be hit to further get information from MTBProject. Currently wondering why I don't 
+just hit everything from the React app. 
 
 ## Resources
 These resources greatly assisted in my understanding:
