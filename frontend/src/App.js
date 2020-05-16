@@ -36,7 +36,7 @@ function send_location_data() {
     let url = "geolocation";  // Where the hell does the rest of the URL go??
     let location = {
       lat: position.coords.latitude,
-      long: position.coords.longitude
+      lon: position.coords.longitude
     };
     let options = {
       method: "POST",

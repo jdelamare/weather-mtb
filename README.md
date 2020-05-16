@@ -25,6 +25,14 @@ dynamoDB guestbook in my other repo). Here we've just got a series of routes tha
 be hit to further get information from MTBProject. Currently wondering why I don't 
 just hit everything from the React app. 
 
+
+#### MTBProject
+The API key is stored in the environment variable `MTBPROJECT_API_KEY`.
+```
+export MTBPROJECT_API_KEY=asdf1234
+```
+The `export` is needed because we have to provide the parent shell's environment to the subprocess? Not sure if there is one...
+
 ## Resources
 These resources greatly assisted in my understanding:
 
