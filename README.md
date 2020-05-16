@@ -10,6 +10,11 @@ Need to learn how to serve these out of Cloudfront or S3 buckets.
 
 Currently working through React tutorials and building the API out simultaneously.
 
+#### React notes
+Each trail system card is populated by data in a prop (presumably). 
+    App should get the data and pass it to the `TrailSystem` function component?
+    Remember to forward the proxy field in `package.json` because you'll get a CORS error otherwise.
+
 #### Geolocation
 Need to handle the error if the user refuses to provide tracking information.
 
@@ -30,7 +35,11 @@ These resources greatly assisted in my understanding:
 #### MTB
 * ![MTB](https://www.mtbproject.com/data)
 
+#### Grid design
+* ![material-ui](https://material-ui.com/components/grid/)
+
 #### Google Maps?
 
 ### Blogs
 * ![react + flask](https://blog.miguelgrinberg.com/post/how-to-create-a-react--flask-project)
+* ![react + geo](https://www.pluralsight.com/guides/how-to-use-geolocation-call-in-reactjs)
