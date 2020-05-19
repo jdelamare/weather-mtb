@@ -20,6 +20,7 @@ frontend/.pnp
 venv
 __pycache__
 journal
+mtb_trails_by_id.json
 
 npm-debug.log*
 yarn-debug.log*
