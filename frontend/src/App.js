@@ -1,39 +1,30 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-function App() {
+class App extends React.Component {
+  constructor() {
+    super()
 
-  send_location_data(); 
-  
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    send_location_data();
+  }
+
+  render() {
+    return (
+      <div>
+        working on trails
+      </div>
+    )
+  }
 }
 
 export default App;
 
-
+// how to bubble up and error from here?
 function send_location_data() {
   // send geolocation data to the backend for processing
   navigator.geolocation.getCurrentPosition((position) => {
     // Some how get the endpoint to post my geolocation data??
-    let url = "geolocation";  // Where the hell does the rest of the URL go??
+    let url = "set_coords";  // Where the hell does the rest of the URL go??
     let location = {
       lat: position.coords.latitude,
       lon: position.coords.longitude
@@ -44,8 +35,6 @@ function send_location_data() {
       headers: { "Content-Type": "application/json" }
     };
     fetch(url, options)
-      .then(response => response.json())
-      .then(data => console.log("Data", data))
       .catch(error => console.log("Request failed", error));
   });
 }

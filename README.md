@@ -18,6 +18,10 @@ Each trail system card is populated by data in a prop (presumably).
 #### Geolocation
 Need to handle the error if the user refuses to provide tracking information.
 
+Random thought on caching.. cache by lat/lon down to two sig figs and store in dynamoDB?
+
+upcoming weather based on location data of a particular trail system?
+
 
 ### Backend
 Chalice application- not providing any static files from this (as opposed to the 
@@ -32,6 +36,11 @@ The API key is stored in the environment variable `MTBPROJECT_API_KEY`.
 export MTBPROJECT_API_KEY=asdf1234
 ```
 The `export` is needed because we have to provide the parent shell's environment to the subprocess? Not sure if there is one...
+
+Since the project is kind of small... perhaps a field with userID and return their favorites
+
+Their API is trash, key goes in a GET request as a query param smh
+TrailForks notice mmmeeeeee
 
 ## Resources
 These resources greatly assisted in my understanding:
