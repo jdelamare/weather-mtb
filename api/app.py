@@ -8,6 +8,19 @@ import json
 
 app = Chalice(app_name="api")
 
+from chalice import CORSConfig
+cors_config = CORSConfig(
+    allow_origin='*',
+    allow_headers=['X-Special-Header'],
+    max_age=600,
+    expose_headers=['X-Special-Header'],
+    allow_credentials=True
+)
+
+@app.route('/test-token', cors=True)
+def test_token():
+    return {"Hello": "Testing"}
+
 LATITUDE = 0
 LONGITUDE = 0
 
@@ -18,8 +31,9 @@ def set_coords():
     LATITUDE = app.current_request.json_body["lat"]
     LONGITUDE = app.current_request.json_body["lon"]
 
-@app.route("get_trails_card")
-def get_trails_card():
+# TODO: I thought there would be a need for CORS here
+@app.route("/get_trails", content_types=["application/json"])
+def get_trails():
     # query DynamoDB for trails instead of hitting API
     payload = { 
         "lat": LATITUDE,
