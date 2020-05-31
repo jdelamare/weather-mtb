@@ -5,6 +5,9 @@ import Card from 'react-bootstrap/Card'
 import './style/TrailList.css'
 
 class TrailList extends Component {
+
+    // TODO bind to handle clicks on the cards here
+
     constructor() {
         super()
         this.state = {
