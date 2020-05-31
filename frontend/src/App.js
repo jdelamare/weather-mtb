@@ -2,8 +2,12 @@ import React from 'react';
 
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col'
 import TrailList from "./TrailList"
-import './App.css';
+import GoogleMap from "./GoogleMap"
+import Details from "./Details"
+import './style/App.css';
 
 class App extends React.Component {
   constructor() {
@@ -15,8 +19,24 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Container className="p-3">
-          <TrailList />
+        <Container fluid>
+          <Row>
+            <Col xs={4} id="TrailList">
+              <TrailList />
+            </Col>
+            <Col xs={8} id="Info">
+              <Row>
+                <Col id="Details">
+                  <Details />
+                </Col>
+              </Row>
+              <Row>
+                <Col id="Map">
+                  <GoogleMap />
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </Container> 
       </div>
     )

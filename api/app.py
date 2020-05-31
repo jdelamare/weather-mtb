@@ -51,10 +51,15 @@ def get_trails():
     # potentially cache the rest based on lat/lon
     return [{ 
         "id": trail["id"], 
-        "name": trail["name"], 
+        "name": trail["name"],
+        "summary": trail["summary"],
+        "length": trail["length"],
+        "longitude": trail["longitude"],
+        "latitude": trail["latitude"],
         "difficulty": trail["difficulty"], 
         "conditionStatus": trail["conditionStatus"], 
-        "conditionDetails": trail["conditionDetails"] } 
+        "conditionDetails": trail["conditionDetails"],
+        "conditionDate": trail["conditionDate"] } 
         for trail in response["trails"]]
 
 

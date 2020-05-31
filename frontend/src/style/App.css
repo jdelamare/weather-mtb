@@ -36,3 +36,33 @@
     transform: rotate(360deg);
   }
 }
+
+.container-fluid {
+  height: 100%
+}
+
+#TrailList {
+  position: absolute;
+  overflow-y: auto; 
+  height: 100%
+}
+
+/* Info contains the Map and the Details  */
+#Info {
+
+  position: absolute;
+  right: 0;
+  height: 100%;
+}
+
+#Map {
+  position: absolute;
+  bottom: 0;
+  height: 50%;
+}
+
+#Details {
+  top: 0;
+  position: absolute;
+  height: 50%;
+}

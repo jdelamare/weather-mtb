@@ -2,24 +2,7 @@ import React, { Component } from 'react';
 
 import Card from 'react-bootstrap/Card'
 
-// [API DATA GOES HERE].map((variant, idx) => (
-//     <>
-//       <Card
-//         border={variant.toLowerCase()}
-//         key={idx}
-//         text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-//         style={{ width: '18rem' }}
-//       >
-//         <Card.Header>Header</Card.Header>
-//         <Card.Body>
-//           <Card.Title>{variant} Card Title </Card.Title>
-//           <Card.Text>
-//           </Card.Text>
-//         </Card.Body>
-//       </Card>
-//       <br />
-//     </>
-//   ));
+import './style/TrailList.css'
 
 class TrailList extends Component {
     constructor() {
@@ -27,10 +10,7 @@ class TrailList extends Component {
         this.state = {
             trails: []
         }
-        // initially go out and get the API data
-        // need to bind the event handler when a user input's their userid
     }
-
 
     // don't forget that if a subscription is created here it'll need to be uncreated
     componentDidMount() {
@@ -45,6 +25,24 @@ class TrailList extends Component {
             .catch(error => console.log("Request failed", error))
     }
 
+    getBorder(trail) {
+        if (trail.conditionStatus.includes("All Clear")) {
+            return "success"
+        } else if (trail.conditionStatus.includes("Closed")) {
+            return "danger"
+        } else {
+            return "info"
+        }
+    }
+
+    // set to epoch if null, so return empty string
+    getConditionDate(trail) {
+        if (trail.conditionDate === "1970-01-01 00:00:00") {
+            return ""
+        }
+        return trail.conditionDate
+    }
+
     render() {
         return (
             <div>
@@ -52,17 +50,19 @@ class TrailList extends Component {
                 .state
                 .trails
                 .map((trail, idx) => (
-                    <>
-                        <Card>
-                        <Card.Header>Header</Card.Header>
+                    <div>
+                        <Card
+                            border={this.getBorder(trail)}
+                            key={idx}
+                        >
+                        <Card.Header>{trail.name}</Card.Header>
                         <Card.Body>
-                            <Card.Title>Card Title </Card.Title>
-                            <Card.Text>
-                            </Card.Text>
+                            <Card.Title>{trail.conditionDetails}</Card.Title>
+                            <Card.Text>{this.getConditionDate(trail)}</Card.Text>
                         </Card.Body>
                         </Card>
                         <br />
-                    </>
+                    </div>
                 ))}
             </div>
         )
@@ -70,35 +70,3 @@ class TrailList extends Component {
 }
 
 export default TrailList
-
-    // TODO: Big current issue here, need to enable CORS since I'm getting a 403?
-    // getTrailData() {
-    // }
-        
-
-    // createJSX() {
-    //     let trails = this.getTrailData();
-    //     //let trails = this.state.trails
-    //     console.log(trails) 
-    //     let jsx = this.state.trails.map((variant, idx) => (
-    //         <>
-    //             <Card
-    //                 border={variant.toLowerCase()}
-    //                 key={idx}
-    //                 text={variant.toLowerCase() === 'light' ? 'dark' : 'white'}
-    //                 style={{ width: '18rem' }}
-    //             >
-    //                 <Card.Header>Header</Card.Header>
-    //                 <Card.Body>
-    //                 <Card.Title>{variant} Card Title </Card.Title>
-    //                 <Card.Text>
-    //                 </Card.Text>
-    //                 </Card.Body>
-    //             </Card>
-    //             <br />
-    //         </>
-    //     ));
-        
-//         return jsx;
-//     }
-// }
