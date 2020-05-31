@@ -5,25 +5,29 @@ import Card from 'react-bootstrap/Card'
 import './style/TrailList.css'
 
 class TrailList extends Component {
-    constructor() {
-        super()
-        this.state = {
-            trails: []
-        }
-    }
+
+    // TODO bind to handle clicks on the cards here
+
+    // constructor() {
+    //     super()
+    //     this.state = {
+    //         trails: []
+    //     }
+    // }
 
     // don't forget that if a subscription is created here it'll need to be uncreated
-    componentDidMount() {
-        let url = "get_trails";  // Where the hell does the rest of the URL go??
-        fetch(url, {
-            headers: { "Content-Type": "application/json" }
-            })
-            .then(response => response.json())
-            .then(_trails => this.setState( {
-                trails: _trails
-            }))
-            .catch(error => console.log("Request failed", error))
-    }
+    // componentDidMount() {
+    //     console.log(this.props)
+    //     let url = "get_trails";  // Where the hell does the rest of the URL go??
+    //     fetch(url, {
+    //         headers: { "Content-Type": "application/json" }
+    //         })
+    //         .then(response => response.json())
+    //         .then(_trails => this.setState( {
+    //             trails: _trails
+    //         }))
+    //         .catch(error => console.log("Request failed", error))
+    // }
 
     getBorder(trail) {
         if (trail.conditionStatus.includes("All Clear")) {
@@ -44,10 +48,11 @@ class TrailList extends Component {
     }
 
     render() {
+        console.log(this.props)
         return (
             <div>
                 {this
-                .state
+                .props 
                 .trails
                 .map((trail, idx) => (
                     <div>

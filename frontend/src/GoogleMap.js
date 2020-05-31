@@ -3,6 +3,10 @@ import React, { Component, createRef } from 'react'
 const GOOGLE_MAP_API_KEY = ''
 
 class GoogleMap extends Component {
+    constructor(props) {
+        super(props)
+    }
+
     // A ref is needed here to access the data after it's been loaded.
     googleMapRef = createRef()
 

@@ -2,15 +2,17 @@ import React, { Component } from 'react'
 
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl'
+import Button from 'react-bootstrap/Button'
 
 import './style/Query.css'
 
 class Query extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
     }
 
     render() {
+        
         return (
             <div>
                 <InputGroup id="Query">
@@ -21,6 +23,9 @@ class Query extends Component {
                         placeholder="MTBProject UserID"
                         aria-label="Small" 
                         aria-describedby="inputGroup-sizing-sm" />
+                    <InputGroup.Append>
+                        <Button variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
+                    </InputGroup.Append>
                 </InputGroup>
             </div>
         )
