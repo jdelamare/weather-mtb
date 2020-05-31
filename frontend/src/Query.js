@@ -24,7 +24,7 @@ class Query extends Component {
                         aria-label="Small" 
                         aria-describedby="inputGroup-sizing-sm" />
                     <InputGroup.Append>
-                        <Button variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
+                        <Button id="button" variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
                     </InputGroup.Append>
                 </InputGroup>
             </div>

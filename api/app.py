@@ -8,6 +8,8 @@ import json
 
 app = Chalice(app_name="api")
 
+x = []
+
 from chalice import CORSConfig
 cors_config = CORSConfig(
     allow_origin='*',
@@ -63,10 +65,27 @@ def get_trails():
         for trail in response["trails"]]
 
 
-# I don't think this will be very useful beyond testing
-# POST some id ?
-@app.route("get_trail_by_id", methods=["POST"], content_types=["application/json"])
-def get_trails():
+# this should probably be form data
+@app.route("/get_favorites", methods=["POST"], content_types=["application/json"])
+def get_favorites():
+    userId = app.current_request.json_body["userId"]
+    payload = {
+        "key": os.getenv("MTBPROJECT_API_KEY"),
+        "userId": userId
+    }
+    # response = requests.get("https://www.mtbproject.com/data/get-favorites", params=payload)
+    response = ''
+    with open('mtb_trails_fav.json') as f:
+        response = json.loads(f.read())
+    
+    print(response)
+    return [
+        trail 
+        for trail in response["toDos"]
+    ]
+
+@app.route("/get_trail_by_id", methods=["POST"], content_types=["application/json"])
+def get_trails_by_id():
 
     # TODO probably should have a try catch return 40X error couldn't find json_body
 
@@ -82,7 +101,7 @@ def get_trails():
 
     # Temporary to avoid exceeding requests
     response = ''
-    with open("mtb_trails.json") as f:
+    with open("mtb_trails_id.json") as f:
         response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
@@ -99,10 +118,3 @@ def get_trails():
         "conditionDate": trail["conditionDate"] } 
         for trail in response["trails"]]
     
-# this should probably be form data
-@app.route("get_favorites", methods=["POST"], content_types=["application/json"])
-def get_favorites():
-    payload = {
-        "key": os.getenv("MTBPROJECT_API_KEY"),
-        "userId": app.current_request.json_body["userId"]
-    }
