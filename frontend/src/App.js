@@ -12,8 +12,48 @@ import './style/App.css';
 class App extends React.Component {
   constructor() {
     super()
+    this.state = {
+      trails: []
+  }
+    this.send_location_data();
+    this.handleClick = this.handleClick.bind(this)
+  }
 
-    send_location_data();
+  // how to bubble up and error from here?
+  send_location_data() {
+    // send geolocation data to the backend for processing
+    navigator.geolocation.getCurrentPosition((position) => {
+      // Some how get the endpoint to post my geolocation data??
+      let url = "set_coords";  // Where the hell does the rest of the URL go??
+      let location = {
+        lat: position.coords.latitude,
+        lon: position.coords.longitude
+      };
+      let options = {
+        method: "POST",
+        body: JSON.stringify(location),
+        headers: { "Content-Type": "application/json" }
+      };
+      fetch(url, options)
+        .catch(error => console.log("Request failed", error));
+    });
+  }
+
+  componentDidMount() {
+    let url = "get_trails";  // Where the hell does the rest of the URL go??
+    fetch(url, {
+        headers: { "Content-Type": "application/json" }
+        })
+        .then(response => response.json())
+        .then(_trails => this.setState( {
+            trails: _trails
+        }))
+        .catch(error => console.log("Request failed", error))
+  }
+
+  // if button is clicked, update state
+  handleClick() {
+    console.log('Click happened');
   }
 
   render() {
@@ -22,12 +62,12 @@ class App extends React.Component {
         <Container fluid>
           <Row>
             <Col xs={4} id="TrailList">
-              <TrailList />
+              <TrailList trails={this.state.trails}/>
             </Col>
             <Col xs={8} id="Info">
               <Row>
                 <Col id="Details">
-                  <Details />
+                  <Details buttonClick={this.handleClick}/>
                 </Col>
               </Row>
               <Row>
@@ -44,23 +84,3 @@ class App extends React.Component {
 }
 
 export default App;
-
-// how to bubble up and error from here?
-function send_location_data() {
-  // send geolocation data to the backend for processing
-  navigator.geolocation.getCurrentPosition((position) => {
-    // Some how get the endpoint to post my geolocation data??
-    let url = "set_coords";  // Where the hell does the rest of the URL go??
-    let location = {
-      lat: position.coords.latitude,
-      lon: position.coords.longitude
-    };
-    let options = {
-      method: "POST",
-      body: JSON.stringify(location),
-      headers: { "Content-Type": "application/json" }
-    };
-    fetch(url, options)
-      .catch(error => console.log("Request failed", error));
-  });
-}

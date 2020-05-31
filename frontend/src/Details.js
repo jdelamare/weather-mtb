@@ -3,15 +3,15 @@ import React, { Component } from 'react'
 import Query from './Query'
 
 class Details extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         
     }
 
     render() {
         return (
             <div>
-                <Query />
+                <Query buttonClick={this.props.buttonClick}/>
                 <div>graphs go here</div>
             </div>
         )
