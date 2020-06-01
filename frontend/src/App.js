@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'
@@ -28,7 +27,7 @@ class App extends React.Component {
         lat: position.coords.latitude,
         lon: position.coords.longitude
       })
-      let url = "get_trails";  // Where the hell does the rest of the URL go??
+      let url = "get_trails";  // Where does the rest of the URL go?
       let location = {
         lat: this.state.lat,
         lon: this.state.lon
@@ -49,8 +48,6 @@ class App extends React.Component {
             lat: _trails[0]["latitude"],
             lon: _trails[0]["longitude"]
           })
-          console.log("lat" + this.state.lat)
-          console.log("lon" + this.state.lon)
         })
         .catch(error => console.log("Request failed", error));
     });
@@ -58,14 +55,12 @@ class App extends React.Component {
 
   // write new function for cardClick
   cardClick(coords) {
-    console.log(coords)
     // transmit this card's data to GoogelMap as a prop
     this.setState({
-      lat: coords["lat"],
-      lon: coords["lon"]
+      lat: coords.lat,
+      lon: coords.lon
     })
   }
-
 
   // my MTBProject userid 200740835
   // if button is clicked, update state
@@ -73,7 +68,8 @@ class App extends React.Component {
     let url_favorites = "get_favorites"
     let _userid = document.getElementById("query").value
     // in lieu of JS, we'll just let other backend deal with bad userid
-    if (_userid === "") {
+    if (_userid === "") 
+    {
       return
     }
     let userId = {
@@ -109,23 +105,34 @@ class App extends React.Component {
       .catch(error => console.log("Request failed", error)) 
   }
 
-  render() {
+  render() 
+  {
     return (
       <div>
         <Container fluid>
           <Row>
-            <Col xs={4} id="TrailList">
-              <TrailList trails={this.state.trails} cardClick={this.cardClick}/>
+            <Col 
+              xs={4} 
+              id="TrailList">
+              <TrailList 
+                trails={this.state.trails} 
+                cardClick={this.cardClick}/>
             </Col>
-            <Col xs={8} id="Info">
+            <Col 
+              xs={8} 
+              id="Info">
               <Row>
-                <Col id="Details">
-                  <Details buttonClick={this.buttonClick}/>
+                <Col 
+                  id="Details">
+                  <Details 
+                    buttonClick={this.buttonClick}/>
                 </Col>
               </Row>
               <Row>
-                <Col id="Map">
-                  <GoogleMap coords={{lat: this.state.lat, lon: this.state.lon}}/>
+                <Col 
+                  id="Map">
+                  <GoogleMap 
+                    coords={{lat: this.state.lat, lon: this.state.lon}}/>
                 </Col>
               </Row>
             </Col>

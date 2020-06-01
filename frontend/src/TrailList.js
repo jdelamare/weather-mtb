@@ -5,9 +5,6 @@ import Card from 'react-bootstrap/Card'
 import './style/TrailList.css'
 
 class TrailList extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     getBorder(trail) {
         if (trail.conditionStatus.includes("All Clear")) 
@@ -35,14 +32,8 @@ class TrailList extends Component {
         return trail.conditionDate
     }
 
-
-    // TODO 
-    // pass function down here to handle click and change state in App.js
-    // which will update the map
     handleCardClick(lat, lon) 
     {
-        // pass this up to the App and get location data
-        // Timebox: 1 hour
         let coords = {
             lat: lat,
             lon: lon
@@ -51,7 +42,8 @@ class TrailList extends Component {
     }
 
 
-    render() {
+    render() 
+    {
         console.log(this.props)
         return (
             <div>
@@ -62,12 +54,19 @@ class TrailList extends Component {
                     <div 
                         onClick={() => this.handleCardClick(trail.latitude, trail.longitude)}
                         key={idx}>
-                        <Card border={this.getBorder(trail)}>
-                        <Card.Header>{trail.name}</Card.Header>
-                        <Card.Body>
-                            <Card.Title>{trail.conditionDetails}</Card.Title>
-                            <Card.Text>{this.getConditionDate(trail)}</Card.Text>
-                        </Card.Body>
+                        <Card 
+                            border={this.getBorder(trail)}>
+                            <Card.Header>
+                                {trail.name}
+                            </Card.Header>
+                            <Card.Body>
+                                <Card.Title>
+                                    {trail.conditionDetails}
+                                </Card.Title>
+                                <Card.Text>
+                                    {this.getConditionDate(trail)}
+                                </Card.Text>
+                            </Card.Body>
                         </Card>
                         <br/>
                     </div>
