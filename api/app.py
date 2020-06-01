@@ -8,8 +8,6 @@ import json
 
 app = Chalice(app_name="api")
 
-x = []
-
 from chalice import CORSConfig
 cors_config = CORSConfig(
     allow_origin='*',
@@ -19,42 +17,26 @@ cors_config = CORSConfig(
     allow_credentials=True
 )
 
-@app.route('/test-token', cors=True)
-def test_token():
-    return {"Hello": "Testing"}
-
-LATITUDE = 0
-LONGITUDE = 0
-
-@app.route("/set_coords", methods=["POST"], content_types=["application/json"])
-def set_coords():
-    global LATITUDE 
-    global LONGITUDE
-    LATITUDE = app.current_request.json_body["lat"]
-    LONGITUDE = app.current_request.json_body["lon"]
-
-# TODO: I thought there would be a need for CORS here
-@app.route("/get_trails", content_types=["application/json"])
+@app.route("/get_trails", methods=["POST"], content_types=["application/json"])
 def get_trails():
+    lat = app.current_request.json_body["lat"]
+    lon = app.current_request.json_body["lon"]
+
     # query DynamoDB for trails instead of hitting API
-    print("lat")
-    print(LATITUDE)
-    print("lon")
-    print(LONGITUDE)
     payload = { 
-        "lat": LATITUDE,
-        "lon": LONGITUDE,
+        "lat": lat,
+        "lon": lon,
         "maxDistance": 50, # default is 30, won't get the faves
         "key": os.getenv("MTBPROJECT_API_KEY")
     }
-    response = requests.get("https://www.mtbproject.com/data/get-trails", params=payload)
-    response_data = response.json()
-    print(response_data)
+    # response = requests.get("https://www.mtbproject.com/data/get-trails", params=payload)
+    # response_data = response.json()
+  
     # Comment out the next four lines for prod
     # Temporary to avoid exceeding requests
-    # response = ''
-    # with open("mtb_trails.json") as f:
-    #     response = json.loads(f.read())
+    response_data = ''
+    with open("mtb_trails.json") as f:
+        response_data = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
     return [{ 
@@ -80,12 +62,15 @@ def get_favorites():
         "userId": userId
     }
 
-    response = requests.get("https://www.mtbproject.com/data/get-favorites", params=payload)
-    response_data = response.json()
-    # response = ''
-    # with open('mtb_trails_fav.json') as f:
-    #     response = json.loads(f.read())
-    print()
+    # response = requests.get("https://www.mtbproject.com/data/get-favorites", params=payload)
+    # response_data = response.json()
+
+    # Remove the next four lines for prod
+    # Temporary to avoid exceeding requests
+    response_data = ''
+    with open('mtb_trails_fav.json') as f:
+        response_data = json.loads(f.read())
+    
     return [
         trail 
         for trail in response_data["toDos"]
@@ -97,19 +82,20 @@ def get_trails_by_id():
     # TODO probably should have a try catch return 40X error couldn't find json_body
 
     ids = app.current_request.json_body["ids"]
-
+    ids = ",".join(str(trail_id) for trail_id in ids)
     payload = {
         "key": os.getenv("MTBPROJECT_API_KEY"),
         "ids": ids
     }
 
-    response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=payload)
+    # response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=payload)
+    # response = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
-    # response = ''
-    # with open("mtb_trails_id.json") as f:
-    #     response = json.loads(f.read())
+    response = ''
+    with open("mtb_trails_id.json") as f:
+        response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
     return [{ 
