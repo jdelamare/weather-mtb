@@ -7,24 +7,30 @@ import Button from 'react-bootstrap/Button'
 import './style/Query.css'
 
 class Query extends Component {
-    constructor(props) {
-        super(props)
-    }
 
     render() {
         
         return (
             <div>
-                <InputGroup id="Query">
+                <InputGroup 
+                    id="Query">
                     <InputGroup.Prepend>
-                    <InputGroup.Text id="inputGroup-sizing-sm">></InputGroup.Text>
+                    <InputGroup.Text 
+                        id="inputGroup-sizing-sm">
+                        >
+                    </InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl 
+                        id="query"
                         placeholder="MTBProject UserID"
                         aria-label="Small" 
                         aria-describedby="inputGroup-sizing-sm" />
                     <InputGroup.Append>
-                        <Button id="button" variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
+                        <Button 
+                            variant="outline-secondary" 
+                            onClick={this.props.buttonClick}>
+                            Button
+                        </Button>
                     </InputGroup.Append>
                 </InputGroup>
             </div>

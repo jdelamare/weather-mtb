@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'
@@ -13,106 +12,127 @@ class App extends React.Component {
   constructor() {
     super()
     this.state = {
-      trails: []
+      trails: [],
+      lat: 0,
+      lon: 0
   }
-    this.send_location_data();
-    this.handleClick = this.handleClick.bind(this)
+    this.buttonClick = this.buttonClick.bind(this)
+    this.cardClick = this.cardClick.bind(this)
   }
 
-  // how to bubble up and error from here?
-  send_location_data() {
-    // send geolocation data to the backend for processing
+  // Happens on load
+  componentDidMount() {
     navigator.geolocation.getCurrentPosition((position) => {
-      // Some how get the endpoint to post my geolocation data??
-      let url = "set_coords";  // Where the hell does the rest of the URL go??
-      let location = {
+      this.setState({
         lat: position.coords.latitude,
         lon: position.coords.longitude
+      })
+      let url = "get_trails";  // Where does the rest of the URL go?
+      let location = {
+        lat: this.state.lat,
+        lon: this.state.lon
       };
       let options = {
         method: "POST",
         body: JSON.stringify(location),
         headers: { "Content-Type": "application/json" }
-      };
+      }
       fetch(url, options)
+        .then(response => response.json())
+        .then(_trails => {
+          if (_trails.length === 0) {
+            return
+          }
+          this.setState({
+            trails: _trails,
+            lat: _trails[0]["latitude"],
+            lon: _trails[0]["longitude"]
+          })
+        })
         .catch(error => console.log("Request failed", error));
     });
   }
 
-  // Happens on load
-  componentDidMount() {
-    let url = "get_trails";  // Where the hell does the rest of the URL go??
-    fetch(url, {
-        headers: { "Content-Type": "application/json" }
-        })
-        .then(response => response.json())
-        .then(_trails => this.setState( {
-            trails: _trails
-        }))
-        .catch(error => console.log("Request failed", error))
+  // write new function for cardClick
+  cardClick(coords) {
+    // transmit this card's data to GoogelMap as a prop
+    this.setState({
+      lat: coords.lat,
+      lon: coords.lon
+    })
   }
 
+  // my MTBProject userid 200740835
   // if button is clicked, update state
-  handleClick() {
+  buttonClick() {
     let url_favorites = "get_favorites"
-    
-    // let userid = document.getElementById("button").value
-
-    // TODO much more error checking on userid
-    // if (userid === "") {
-    //   return
-    // }
-
-    // My userId for testing purposes
+    let _userid = document.getElementById("query").value
+    // in lieu of JS, we'll just let other backend deal with bad userid
+    if (_userid === "") 
+    {
+      return
+    }
     let userId = {
-      userId: 200740835
+      userId: _userid
     }
     let options_favorites = {
       method: "POST",
       body: JSON.stringify(userId),
       headers: { "Content-Type": "application/json" }
     };
+
     fetch(url_favorites, options_favorites)
-        .then(response => response.json())
-        .then(trail_ids => {
-          let url_by_id = "get_trail_by_id"
-          let ids = {
-            ids: trail_ids
-          }
-          let options_by_id = {
-            method: "POST",
-            body: JSON.stringify(ids),
-            headers: { "Content-Type": "application/json" }
-          }
-          return fetch(url_by_id, options_by_id)
-        })
-        .then(response => response.json())
-        // .then(_trails => {
-        //   console.log(_trails)
-        // })
-        .then(_trails => this.setState({
+      .then(response => response.json())
+      .then(trail_ids => {
+        let url_by_id = "get_trail_by_id"
+        let ids = {
+          ids: trail_ids
+        }
+        let options_by_id = {
+          method: "POST",
+          body: JSON.stringify(ids),
+          headers: { "Content-Type": "application/json" }
+        }
+        return fetch(url_by_id, options_by_id)
+      })
+      .then(response => response.json())
+      .then(_trails => {
+        // Point of optimization here, no need to rerender if the same trails are displayed
+        this.setState({
           trails: _trails
-        }))
-        .catch(error => console.log("Request failed", error)) 
+        })
+      })
+      .catch(error => console.log("Request failed", error)) 
   }
 
-  render() {
+  render() 
+  {
     return (
       <div>
         <Container fluid>
           <Row>
-            <Col xs={4} id="TrailList">
-              <TrailList trails={this.state.trails}/>
+            <Col 
+              xs={4} 
+              id="TrailList">
+              <TrailList 
+                trails={this.state.trails} 
+                cardClick={this.cardClick}/>
             </Col>
-            <Col xs={8} id="Info">
+            <Col 
+              xs={8} 
+              id="Info">
               <Row>
-                <Col id="Details">
-                  <Details buttonClick={this.handleClick}/>
+                <Col 
+                  id="Details">
+                  <Details 
+                    buttonClick={this.buttonClick}/>
                 </Col>
               </Row>
               <Row>
-                <Col id="Map">
-                  <GoogleMap />
+                <Col 
+                  id="Map">
+                  <GoogleMap 
+                    coords={{lat: this.state.lat, lon: this.state.lon}}/>
                 </Col>
               </Row>
             </Col>
