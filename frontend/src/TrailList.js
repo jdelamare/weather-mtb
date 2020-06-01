@@ -32,19 +32,18 @@ class TrailList extends Component {
         return trail.conditionDate
     }
 
-    handleCardClick(lat, lon) 
+    handleCardClick(lat, lon, idx) 
     {
         let coords = {
             lat: lat,
             lon: lon
         }
-        this.props.cardClick(coords)
+        this.props.cardClick(coords, idx)
     }
 
 
     render() 
     {
-        console.log(this.props)
         return (
             <div>
                 {this
@@ -52,7 +51,7 @@ class TrailList extends Component {
                 .trails
                 .map((trail, idx) => (
                     <div 
-                        onClick={() => this.handleCardClick(trail.latitude, trail.longitude)}
+                        onClick={() => this.handleCardClick(trail.latitude, trail.longitude, idx)}
                         key={idx}>
                         <Card 
                             border={this.getBorder(trail)}>
