@@ -55,45 +55,49 @@ class App extends React.Component {
   // if button is clicked, update state
   handleClick() {
     let url_favorites = "get_favorites"
-    
-    // let userid = document.getElementById("button").value
+    let _userid = document.getElementById("query").value
 
-    // TODO much more error checking on userid
-    // if (userid === "") {
-    //   return
-    // }
-
-    // My userId for testing purposes
-    let userId = {
-      userId: 200740835
+    // in lieu of JS, we'll just let other backend deal with bad userid
+    if (_userid === "") {
+      return
     }
+    // Remove the next four lines for prod
+    // My userId for testing purposes
+    // let userId = {
+    //   userId: 200740835
+    // }
+    let userId = {
+      userId: _userid
+    }
+
     let options_favorites = {
       method: "POST",
       body: JSON.stringify(userId),
       headers: { "Content-Type": "application/json" }
     };
+
     fetch(url_favorites, options_favorites)
-        .then(response => response.json())
-        .then(trail_ids => {
-          let url_by_id = "get_trail_by_id"
-          let ids = {
-            ids: trail_ids
-          }
-          let options_by_id = {
-            method: "POST",
-            body: JSON.stringify(ids),
-            headers: { "Content-Type": "application/json" }
-          }
-          return fetch(url_by_id, options_by_id)
-        })
-        .then(response => response.json())
-        // .then(_trails => {
-        //   console.log(_trails)
-        // })
-        .then(_trails => this.setState({
+      .then(response => response.json())
+      .then(trail_ids => {
+        let url_by_id = "get_trail_by_id"
+        let ids = {
+          ids: trail_ids
+        }
+        let options_by_id = {
+          method: "POST",
+          body: JSON.stringify(ids),
+          headers: { "Content-Type": "application/json" }
+        }
+        return fetch(url_by_id, options_by_id)
+      })
+      .then(response => response.json())
+      .then(_trails => {
+        // Point of optimization here, no need to rerender if the same trails are displayed
+        this.setState({
           trails: _trails
-        }))
-        .catch(error => console.log("Request failed", error)) 
+        })
+      })
+      .catch(error => console.log("Request failed", error)) 
   }
 
   render() {

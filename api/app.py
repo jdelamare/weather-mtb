@@ -37,18 +37,24 @@ def set_coords():
 @app.route("/get_trails", content_types=["application/json"])
 def get_trails():
     # query DynamoDB for trails instead of hitting API
+    print("lat")
+    print(LATITUDE)
+    print("lon")
+    print(LONGITUDE)
     payload = { 
         "lat": LATITUDE,
         "lon": LONGITUDE,
         "maxDistance": 50, # default is 30, won't get the faves
         "key": os.getenv("MTBPROJECT_API_KEY")
     }
-    #response = requests.get("https://www.mtbproject.com/data/get-trails", params=payload)
-
+    response = requests.get("https://www.mtbproject.com/data/get-trails", params=payload)
+    response_data = response.json()
+    print(response_data)
+    # Comment out the next four lines for prod
     # Temporary to avoid exceeding requests
-    response = ''
-    with open("mtb_trails.json") as f:
-        response = json.loads(f.read())
+    # response = ''
+    # with open("mtb_trails.json") as f:
+    #     response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
     return [{ 
@@ -62,7 +68,7 @@ def get_trails():
         "conditionStatus": trail["conditionStatus"], 
         "conditionDetails": trail["conditionDetails"],
         "conditionDate": trail["conditionDate"] } 
-        for trail in response["trails"]]
+        for trail in response_data["trails"]]
 
 
 # this should probably be form data
@@ -73,15 +79,16 @@ def get_favorites():
         "key": os.getenv("MTBPROJECT_API_KEY"),
         "userId": userId
     }
-    # response = requests.get("https://www.mtbproject.com/data/get-favorites", params=payload)
-    response = ''
-    with open('mtb_trails_fav.json') as f:
-        response = json.loads(f.read())
-    
-    print(response)
+
+    response = requests.get("https://www.mtbproject.com/data/get-favorites", params=payload)
+    response_data = response.json()
+    # response = ''
+    # with open('mtb_trails_fav.json') as f:
+    #     response = json.loads(f.read())
+    print()
     return [
         trail 
-        for trail in response["toDos"]
+        for trail in response_data["toDos"]
     ]
 
 @app.route("/get_trail_by_id", methods=["POST"], content_types=["application/json"])
@@ -89,7 +96,6 @@ def get_trails_by_id():
 
     # TODO probably should have a try catch return 40X error couldn't find json_body
 
-    #"3482113, 4458855, 7028712, 7014484" # sandy, stub, gateway, post 
     ids = app.current_request.json_body["ids"]
 
     payload = {
@@ -97,12 +103,13 @@ def get_trails_by_id():
         "ids": ids
     }
 
-    # response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=payload)
+    response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=payload)
 
+    # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
-    response = ''
-    with open("mtb_trails_id.json") as f:
-        response = json.loads(f.read())
+    # response = ''
+    # with open("mtb_trails_id.json") as f:
+    #     response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
     return [{ 

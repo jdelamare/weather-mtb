@@ -20,11 +20,12 @@ class Query extends Component {
                     <InputGroup.Text id="inputGroup-sizing-sm">></InputGroup.Text>
                     </InputGroup.Prepend>
                     <FormControl 
+                        id="query"
                         placeholder="MTBProject UserID"
                         aria-label="Small" 
                         aria-describedby="inputGroup-sizing-sm" />
                     <InputGroup.Append>
-                        <Button id="button" variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
+                        <Button variant="outline-secondary" onClick={this.props.buttonClick}>Button</Button>
                     </InputGroup.Append>
                 </InputGroup>
             </div>
