@@ -13,8 +13,9 @@ class App extends React.Component {
     super()
     this.state = {
       trails: [],
-      lat: 0,
-      lon: 0
+      lat: 0, // could refactor away these and just use trail data
+      lon: 0,
+      focusTrail: 0
   }
     this.buttonClick = this.buttonClick.bind(this)
     this.cardClick = this.cardClick.bind(this)
@@ -46,7 +47,8 @@ class App extends React.Component {
           this.setState({
             trails: _trails,
             lat: _trails[0]["latitude"],
-            lon: _trails[0]["longitude"]
+            lon: _trails[0]["longitude"],
+            focusTrail: 0
           })
         })
         .catch(error => console.log("Request failed", error));
@@ -54,11 +56,12 @@ class App extends React.Component {
   }
 
   // write new function for cardClick
-  cardClick(coords) {
+  cardClick(coords, idx) {
     // transmit this card's data to GoogelMap as a prop
     this.setState({
       lat: coords.lat,
-      lon: coords.lon
+      lon: coords.lon,
+      focusTrail: idx
     })
   }
 
@@ -125,7 +128,8 @@ class App extends React.Component {
                 <Col 
                   id="Details">
                   <Details 
-                    buttonClick={this.buttonClick}/>
+                    buttonClick={this.buttonClick}
+                    trailData={this.state}/>
                 </Col>
               </Row>
               <Row>
