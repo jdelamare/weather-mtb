@@ -82,8 +82,8 @@ class App extends React.Component {
       method: "POST",
       body: JSON.stringify(userId),
       headers: { "Content-Type": "application/json" }
-    };
-
+    }
+    
     fetch(url_favorites, options_favorites)
       .then(response => response.json())
       .then(trail_ids => {

@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {HorizontalBar} from 'react-chartjs-2'
 
+// TODO label axis
+
 class BarChart extends Component {
     constructor(props) {
       super(props)
@@ -80,7 +82,7 @@ class BarChart extends Component {
                     fontSize:20
                   },
                   legend:{
-                    display:false,
+                    display:true,
                   },
                   maintainAspectRatio: true 
                 }}

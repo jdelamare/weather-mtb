@@ -17,11 +17,11 @@ class Details extends Component {
         super(props)
         this.state = {
             rating: 0,
-            difficulty: ""
+            difficulty: "",
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps) {
         if (this.props.trailData.trails.length !== prevProps.trailData.trails.length || // when we first load
             this.props.trailData.focusTrail !== prevProps.trailData.focusTrail)         // when we click a trail
         {  
@@ -35,9 +35,6 @@ class Details extends Component {
 
     render() 
     {
-        console.log("rerendering details")
-        console.log(this.props.trailData)
-
         return (
             <div>
                 <Row id="row1">
@@ -53,8 +50,8 @@ class Details extends Component {
                                 <Summary trailData={this.props.trailData}/>
                             </Col>
                             <Col>
-                                <Weather coords={{lat: this.state.lat, lon: this.state.lon}}/>
-                            </Col> 
+                                <Weather coords={{lat: this.props.trailData.lat, lon: this.props.trailData.lon}}/>
+                            </Col>
                         </Row>
                         <Row id="row3">
                             <Col>

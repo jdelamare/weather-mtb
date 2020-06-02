@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 
 class Difficulty extends Component {
+    
+    // TODO Don't need these divs because <svg> is one JSX element
+
     render() {
         let difficulty = this.props.difficulty;
         if (difficulty === "green") 
@@ -55,12 +58,12 @@ class Difficulty extends Component {
                 </div>
             )
         }
-        else if (difficulty === "freeride")
+        else if (difficulty === "freeride") // TODO this could be an error
         {
             return (
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" id="Ski Trail Rating Symbols - Terrain Park" viewBox="0 0 599 599" width="30%" height="auto">
-                        <rect id="terrain_park" style="fill:#F90;stroke:#F90;stroke-width:100px;stroke-linecap:round;stroke-linejoin:round;" fill="#F90" x="100" y="225" width="400" height="150"/>
+                        <rect id="terrain_park" styles="fill:#F90;stroke:#F90;stroke-width:100px;stroke-linecap:round;stroke-linejoin:round;" fill="#F90" x="100" y="225" width="400" height="150"/>
                     </svg>
                 </div>
             )
