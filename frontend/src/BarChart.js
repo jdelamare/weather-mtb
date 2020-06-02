@@ -82,7 +82,7 @@ class BarChart extends Component {
                   legend:{
                     display:false,
                   },
-                  maintainAspectRatio: false
+                  maintainAspectRatio: true 
                 }}
               />
           )

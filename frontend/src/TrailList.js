@@ -29,7 +29,7 @@ class TrailList extends Component {
             return ""
         }
 
-        return trail.conditionDate
+        return "Last Updated: " + trail.conditionDate
     }
 
     handleCardClick(lat, lon, idx) 
@@ -56,7 +56,7 @@ class TrailList extends Component {
                         <Card 
                             border={this.getBorder(trail)}>
                             <Card.Header>
-                                {trail.name}
+                                Trail Name: {trail.name}
                             </Card.Header>
                             <Card.Body>
                                 <Card.Title>
