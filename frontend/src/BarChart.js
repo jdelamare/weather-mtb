@@ -76,13 +76,21 @@ class BarChart extends Component {
               <HorizontalBar
                 data={{ datasets: this.state.datasets }}
                 options={{
+                  scales: {
+                    xAxes: [{
+                      scaleLabel: {
+                        display: true,
+                        labelString: 'Distance in feet'
+                      }
+                    }]
+                  },
                   title:{
                     display:true,
                     text: 'Descent / Ascent',
                     fontSize:20
                   },
                   legend:{
-                    display:true,
+                    display:true
                   },
                   maintainAspectRatio: true 
                 }}

@@ -22,13 +22,18 @@ def get_trails():
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
 
+    lat_lon = prep_lat_lon(lat, lon)
+
     # query DynamoDB for trails instead of hitting API
+    
+
     params = { 
         "lat": lat,
         "lon": lon,
         "maxDistance": 50, # default is 30, won't get the faves
         "key": os.getenv("MTBPROJECT_API_KEY")
     }
+
     # response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
     # response_data = response.json()
   
@@ -156,3 +161,6 @@ def weather():
         "weather": weather,
         "weather_icon": weather_icon
     }
+
+def prep_lat_lon(lat, lon):
+    return f"{lat:.2f},{lon:2f}"
