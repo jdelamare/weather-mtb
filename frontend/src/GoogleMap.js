@@ -1,6 +1,7 @@
 import React, { Component, createRef } from 'react'
 
-const GOOGLE_MAP_API_KEY = ''
+// TODO Remove this and push to the backend
+const GOOGLE_MAP_API_KEY = 'AIzaSyD4j7Sdr0HQ2dtlq16DzzmTff3NQdf7iXc'
 
 class GoogleMap extends Component {
     // A ref is needed here to access the data after it's been loaded.

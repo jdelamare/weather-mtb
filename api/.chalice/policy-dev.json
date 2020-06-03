@@ -1,0 +1,35 @@
+{
+  "Version": "2020-06-02",
+  "Statement": [
+    {
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents"
+      ],  
+      "Resource": "arn:aws:logs:*:*:*",
+      "Effect": "Allow"
+    },  
+    {   
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:Query"
+      ],  
+      "Resource": [
+        "arn:aws:dynamodb:*:*:table/weathermtb-*"
+      ],
+      "Effect": "Allow"
+    },
+    {
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::*::role/weathermtb-*",
+      "Effect": "Allow"
+    }
+  ]
+}

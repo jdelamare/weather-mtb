@@ -1,9 +1,11 @@
 {
   "version": "2.0",
-  "app_name": "api",
+  "app_name": "weathermtb",
   "stages": {
     "dev": {
-      "api_gateway_stage": "api"
+      "api_gateway_stage": "weathermtb",
+      "autogen_policy": false,
+      "environment_variables": {}
     }
   }
 }

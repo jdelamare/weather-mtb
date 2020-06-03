@@ -1,0 +1,37 @@
+{
+    "Outputs": {
+      "WeatherMTBBulkTrailsTableName": {
+        "Value": {
+          "Ref": "WeatherMTBBulkTrailsTable"
+        }
+      }
+    },
+    "Resources": {
+      "GuestbookTable": {
+        "Properties": {
+          "KeySchema": [
+            {
+              "AttributeName": "LatLon",
+              "KeyType": "HASH"
+            }
+          ],
+          "AttributeDefinitions": [
+            {
+              "AttributeName": "LatLon",
+              "AttributeType": "S"
+            },
+            {
+              "AttributeName": "Trails",
+              "AttributeType": "S"
+            }
+          ],
+          "ProvisionedThroughput": {
+            "ReadCapacityUnits": 1,
+            "WriteCapacityUnits": 1
+          }
+        },
+         "Type": "AWS::DynamoDB::Table"
+      }
+    } 
+  }
+  

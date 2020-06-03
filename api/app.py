@@ -1,7 +1,9 @@
 from chalice import Chalice
+from .chalicelib import model
 import requests
 import os
 import json
+import boto3
 
 # TODO: Type annotations before Brian kills you
 # TODO: Errors for bad requests
@@ -17,33 +19,60 @@ cors_config = CORSConfig(
     allow_credentials=True
 )
 
+_WEATHERMTB_DB = None
+_MTBPROJECT_API_KEY = None
+_WEATHER_API_KEY = None
+
+def get_weathermtb_db():
+    global _WEATHERMTB_DB
+    global _MTBPROJECT_API_KEY    
+    global _WEATHER_API_KEY
+
+    # if a handle doesn't exist, instantiate a table resource object
+    if _WEATHERMTB_DB is None:
+        _WEATHERMTB_DB = model.model(
+            boto3.resource('dynamodb').Table(
+
+                # recordresources.py must have been run by here <---- IMPORTANT
+                os.environ['WEATHERMTB_TABLE_NAME'])) 
+
+    return _WEATHERMTB_DB
+
+def populate_env_vars():
+    os.environ['']
+
+
 @app.route("/get_trails", methods=["POST"], content_types=["application/json"])
 def get_trails():
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
-
     lat_lon = prep_lat_lon(lat, lon)
 
     # query DynamoDB for trails instead of hitting API
-    
+    # index on `lat` + `lon` with precision 3 
+    response = model.select(lat_lon) # if successful returns a dict
 
-    params = { 
-        "lat": lat,
-        "lon": lon,
-        "maxDistance": 50, # default is 30, won't get the faves
-        "key": os.getenv("MTBPROJECT_API_KEY")
-    }
+    # call out to the API since this location is not cached
+    if len(response) == 0: 
+        print("Caling the MTBProject API")
+        params = { 
+            "lat": lat,
+            "lon": lon,
+            "maxDistance": 50, # default is 30, won't get the faves
+            "key": os.getenv("MTBPROJECT_API_KEY")
+        }
 
-    # response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
-    # response_data = response.json()
-  
+        #by default this returns 10 trails
+        response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
+        response = response.json()
+        # TODO: difference between parsing the string as JSON and the dict returned by model.select() ?
+
     # Comment out the next four lines for prod
     # Temporary to avoid exceeding requests
-    response_data = ''
-    with open("mtb_trails.json") as f:
-        response_data = json.loads(f.read())
+    # response_data = ''
+    # with open("./data/mtb_trails.json") as f:
+    #     response_data = json.loads(f.read())
 
-    # potentially cache the rest based on lat/lon
     return [{ 
         "id": trail["id"], 
         "name": trail["name"],
@@ -59,7 +88,7 @@ def get_trails():
         "conditionStatus": trail["conditionStatus"], 
         "conditionDetails": trail["conditionDetails"],
         "conditionDate": trail["conditionDate"] } 
-        for trail in response_data["trails"]]
+        for trail in response["trails"]]
 
 
 # this should probably be form data
@@ -77,7 +106,7 @@ def get_favorites():
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
     response_data = ''
-    with open('mtb_trails_fav.json') as f:
+    with open('./data/mtb_trails_fav.json') as f:
         response_data = json.loads(f.read())
     
     return [
@@ -89,6 +118,7 @@ def get_favorites():
 def get_trails_by_id():
 
     # TODO probably should have a try catch return 40X error couldn't find json_body
+    # TODO document that this function is coupled with get_favorites since it only returns trailIds
 
     ids = app.current_request.json_body["ids"]
     ids = ",".join(str(trail_id) for trail_id in ids)
@@ -97,13 +127,16 @@ def get_trails_by_id():
         "ids": ids
     }
 
+    # query DynamoDB for trails instead of hitting API
+    # key is trailId data is for one trail
+
     # response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=params)
     # response = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
     response = ''
-    with open("mtb_trails_id.json") as f:
+    with open("./data/mtb_trails_id.json") as f:
         response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
@@ -126,23 +159,23 @@ def get_trails_by_id():
 
 @app.route("/weather", methods=["POST"], content_types=["application/json"])
 def weather():
-    # make POST out to that website...
+    # make POST out to `https://api.openweathermap.org/data/2.5/onecall?lat=${LATITUDE}&lon=${LONGITUDE}&exclude=${PART}&appid=${WEATHER_API_KEY}`
 
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
     part = app.current_request.json_body["part"]
     key = os.getenv("WEATHER_API_KEY")
-    print(f"lat {lat} lon {lon}")
     url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={key}" 
-    # print(url)
-    # `https://api.openweathermap.org/data/2.5/onecall?lat=${LATITUDE}&lon=${LONGITUDE}&exclude=${PART}&appid=${WEATHER_API_KEY}`
+
+    # DynamoDB table for weather at a lat_lon
+
     # response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
     # response = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
     response_data = ''
-    with open('weather_daily.json') as f:
+    with open('./data/weather_daily.json') as f:
         response_data = json.loads(f.read())
 
     # Extract the weather and get the data out
@@ -153,7 +186,6 @@ def weather():
 
     weather = response_data["daily"][0]["weather"][0]["main"]
     weather_icon = response_data["daily"][0]["weather"][0]["icon"]
-
 
     return {
         "max_temp_faren": max_temp_faren,
