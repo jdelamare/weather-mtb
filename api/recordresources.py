@@ -41,15 +41,31 @@ def record_as_env_var(stack_name, stage):
         data['stages'][stage]['environment_variables'][
             'GOOGLE_MAP_API_KEY'] = os.environ['GOOGLE_MAP_API_KEY']
 
-        aws_cloudformation_output = subprocess.run(["aws", "cloudformation","describe-stacks", "--stack-name",
-                                                    "weathermtb-fifth", "--query", "Stacks[].Outputs"],
-                                                    encoding="utf-8", capture_output=True)
-                                                    #"<STACK-NAME-HERE>", "-query", "Stacks[].Outputs"])
-        aws_cloudformation_output = json.loads(aws_cloudformation_output.stdout)
-        table_name = aws_cloudformation_output[0][0]["OutputValue"] # perhaps adding more table names won't be too tough...
-        data['stages'][stage]['environment_variables'][
-            'WEATHERMTB_TABLE_NAME'] = table_name
-        
+        try:
+            aws_cloudformation_output = subprocess.run(["aws", "cloudformation","describe-stacks", "--stack-name",
+                                                        "<STACK-NAME-HERE>", "--query", "Stacks[].Outputs"],
+                                                        encoding="utf-8", capture_output=True)
+                                                        #"<STACK-NAME-HERE>", "-query", "Stacks[].Outputs"])
+            aws_cloudformation_output = json.loads(aws_cloudformation_output.stdout)
+
+            trail_ids_table_name = aws_cloudformation_output[0][1]["OutputValue"]
+            data['stages'][stage]['environment_variables'][
+                'TRAIL_IDS_TABLE_NAME'] = trail_ids_table_name
+
+            bulk_table_name = aws_cloudformation_output[0][1]["OutputValue"]
+            data['stages'][stage]['environment_variables'][
+                'BULK_TABLE_NAME'] = bulk_table_name
+
+            userid_table_name = aws_cloudformation_output[0][2]["OutputValue"]
+            data['stages'][stage]['environment_variables'][
+                'USERID_TABLE_NAME'] = userid_table_name
+
+            weather_table_name = aws_cloudformation_output[0][3]["OutputValue"]
+            data['stages'][stage]['environment_variables'][
+                'WEATHER_TABLE_NAME'] = weather_table_name
+
+        except Exception as ex:
+            print("You probably tried to access output from `aws cloudformation describe stack` that doesn't exist.")
 
     with open(os.path.join('.chalice', 'config.json'), 'w') as f:
         serialized = json.dumps(data, indent=2, separators=(',', ': '))

@@ -1,5 +1,10 @@
 {
   "Outputs": {
+    "TrailIdsTableName": {
+      "Value": {
+        "Ref": "TrailIdsTable"
+      }
+    },
     "BulkTrailsTableName": {
       "Value": {
         "Ref": "BulkTrailsTable"
@@ -9,9 +14,35 @@
       "Value": {
         "Ref": "UserIdTable"
       }
+    },
+    "WeatherTableName": {
+      "Value": {
+        "Ref": "WeatherTable"
+      }
     }
   },
   "Resources": {
+    "TrailIdsTable": {
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "ids",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          { 
+            "AttributeName": "ids",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Type": "AWS::DynamoDB::Table"
+    },
     "BulkTrailsTable": {
       "Properties": {
         "KeySchema": [
