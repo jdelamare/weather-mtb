@@ -9,146 +9,144 @@ import Details from "./Details"
 import './style/App.css';
 
 class App extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      trails: [],
-      lat: 0, // could refactor away these and just use trail data
-      lon: 0,
-      focusTrail: 0
-  }
-    this.buttonClick = this.buttonClick.bind(this)
-    this.cardClick = this.cardClick.bind(this)
-  }
-
-  // Happens on load
-  componentDidMount() {
-    navigator.geolocation.getCurrentPosition((position) => {
-      this.setState({
-        lat: position.coords.latitude,
-        lon: position.coords.longitude
-      })
-      let url = BASE_URL + "get_trails";  // TODO auto replace with full backend URL on deploy
-      let location = {
-        lat: this.state.lat,
-        lon: this.state.lon
-      };
-      let options = {
-        method: "POST",
-        body: JSON.stringify(location),
-        headers: { "Content-Type": "application/json" }
-      }
-      fetch(url, options)
-        .then(response => response.json())
-        .then(_trails => {
-          if (_trails.length === 0) {
-            return
-          }
-          this.setState({
-            trails: _trails,
-            lat: _trails[0]["latitude"],
-            lon: _trails[0]["longitude"],
+    constructor() {
+        super()
+        this.state = {
+            trails: [],
+            lat: 0, // could refactor away these and just use trail data
+            lon: 0,
             focusTrail: 0
-          })
-        })
-        .catch(error => console.log("Request failed", error));
-    });
-  }
+        }
+        this.buttonClick = this.buttonClick.bind(this)
+        this.cardClick = this.cardClick.bind(this)
+    }
 
-  // write new function for cardClick
-  cardClick(coords, idx) {
+    // Happens on load
+    componentDidMount() {
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.setState({
+            lat: position.coords.latitude,
+            lon: position.coords.longitude
+        })
+        let url = "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_trails";  // TODO auto replace with full backend URL on deploy
+        let location = {
+            lat: this.state.lat,
+            lon: this.state.lon
+        };
+        let options = {
+            method: "POST",
+            body: JSON.stringify(location),
+            headers: { "Content-Type": "application/json" }
+        }
+        fetch(url, options)
+            .then(response => response.json())
+            .then(_trails => {
+                if (_trails.length === 0) {
+                    return
+                }
+                this.setState({
+                    trails: _trails,
+                    lat: _trails[0]["latitude"],
+                    lon: _trails[0]["longitude"],
+                    focusTrail: 0
+                })
+            })
+            .catch(error => console.log("Request failed", error));
+        });
+    }
+
+    // write new function for cardClick
+    cardClick(coords, idx) {
     // transmit this card's data to GoogelMap as a prop
-    this.setState({
-      lat: coords.lat,
-      lon: coords.lon,
-      focusTrail: idx
-    })
-  }
-
-  // my MTBProject userid 200740835
-  // if button is clicked, update state
-  // TODO this could be refactored
-  buttonClick() {
-    let url_favorites =  BASE_URL + "get_favorites"  // TODO auto replace with full backend URL on deploy
-    let _userid = document.getElementById("query").value
-    // in lieu of JS, we'll just let other backend deal with bad userid
-    if (_userid === "") 
-    {
-      return
-    }
-    let userId = {
-      userId: `${_userid}`
-    }
-    let options_favorites = {
-      method: "POST",
-      body: JSON.stringify(userId),
-      headers: { "Content-Type": "application/json" }
-    }
-    
-    fetch(url_favorites, options_favorites)
-      .then(response => response.json())
-      .then(trail_ids => {
-        let url_by_id = BASE_URL + "get_trail_by_id"  // TODO auto replace with full backend URL on deploy
-        let ids = {
-          ids: trail_ids 
-        }
-        let options_by_id = {
-          method: "POST",
-          body: JSON.stringify(ids),
-          headers: { "Content-Type": "application/json" }
-        }
-        return fetch(url_by_id, options_by_id)
-      })
-      .then(response => response.json())
-      .then(_trails => {
-        if (_trails.length === 0) {
-          return
-        }
-        // Point of optimization here, no need to rerender if the same trails are displayed
         this.setState({
-          trails: _trails
+            lat: coords.lat,
+            lon: coords.lon,
+            focusTrail: idx
         })
-      })
-      .catch(error => console.log("Request failed", error)) 
-  }
+    }
 
-  render() 
-  {
-    return (
-      <div>
-        <Container fluid>
-          <Row>
-            <Col 
-              xs={4} 
-              id="TrailList">
-              <TrailList 
-                trails={this.state.trails} 
-                cardClick={this.cardClick}/>
-            </Col>
-            <Col 
-              xs={8} 
-              id="Info">
+  
+    // if button is clicked, update state
+    buttonClick() {
+        let url_favorites =  "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_favorites"  // TODO auto replace with full backend URL on deploy
+        let _userid = document.getElementById("query").value
+        // TODO this could be refactored
+        // in lieu of JS, we'll just let other backend deal with bad userid
+        if (_userid === "") {
+            return
+        }
+        let userId = {
+            userId: `${_userid}`
+        }
+        let options_favorites = {
+            method: "POST",
+            body: JSON.stringify(userId),
+            headers: { "Content-Type": "application/json" }
+        }
+    
+        fetch(url_favorites, options_favorites)
+            .then(response => response.json())
+            .then(trail_ids => {
+                let url_by_id = "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_trail_by_id"  // TODO auto replace with full backend URL on deploy
+                let ids = {
+                    ids: trail_ids 
+                }
+                let options_by_id = {
+                    method: "POST",
+                    body: JSON.stringify(ids),
+                    headers: { "Content-Type": "application/json" }
+                }
+                return fetch(url_by_id, options_by_id)
+            })
+            .then(response => response.json())
+            .then(_trails => {
+                if (_trails.length === 0) {
+                    return
+                }
+                // Point of optimization here, no need to rerender if the same trails are displayed
+                this.setState({
+                    trails: _trails
+                })
+            })
+            .catch(error => console.log("Request failed", error)) 
+    }
+
+    render() {
+        return (
+          <div>
+            <Container fluid>
               <Row>
                 <Col 
-                  id="Details">
-                  <Details 
-                    buttonClick={this.buttonClick}
-                    trailData={this.state}/>
+                  xs={4} 
+                  id="TrailList">
+                  <TrailList 
+                    trails={this.state.trails} 
+                    cardClick={this.cardClick}/>
                 </Col>
-              </Row>
-              <Row>
                 <Col 
-                  id="Map">
-                  <GoogleMap 
-                    coords={{lat: this.state.lat, lon: this.state.lon}}/>
+                  xs={8} 
+                  id="Info">
+                  <Row>
+                    <Col 
+                      id="Details">
+                      <Details 
+                        buttonClick={this.buttonClick}
+                        trailData={this.state}/>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col 
+                      id="Map">
+                      <GoogleMap 
+                        coords={{lat: this.state.lat, lon: this.state.lon}}/>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Col>
-          </Row>
-        </Container> 
-      </div>
-    )
-  }
+            </Container> 
+          </div>
+        )
+    }
 }
 
 export default App;

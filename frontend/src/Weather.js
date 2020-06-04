@@ -2,6 +2,13 @@ import React, { Component } from 'react'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 
+// My take on this particular API key is as follows:
+// Yes, it's bad practice to put an API key in the code. It's not in the repository
+// where the code is hosted. But the only alternative (when hosting out of S3), would
+// be to make a call to the backend to get the API key before use. But that's too much
+// overhead. As it stands, unless I ship back the map data (clueless how to), an end 
+// user would be able to sniff this key in transit anyways- it's in your plaintext 
+// request. So the justification is that it stays here and I rate limit in GCP.
 const WEATHER_API_KEY = ''
 
 class Weather extends Component {
@@ -16,7 +23,7 @@ class Weather extends Component {
         if (this.props.coords.lat !== prevProps.coords.lat || this.props.coords.lon !== prevProps.coords.lon) {
             
             // TODO: This is wrong.. supposed to hit backend not the API directly
-            let url = BASE_URL + "weather"
+            let url = "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/weather"
             let payload = {
                 lat: this.props.coords.lat,
                 lon: this.props.coords.lon,
@@ -44,8 +51,8 @@ class Weather extends Component {
         return (
             <Row>
                 <Col>
-                    <p>Max temp: {this.state.weather_data.max_temp_faren}</p>
-                    <p>Morning temp: {this.state.weather_data.morn_temp_faren}</p>
+                    <p>Max temp: {this.state.weather_data.max_temp_faren}°F</p>
+                    <p>Morning temp: {this.state.weather_data.morn_temp_faren}°F</p>
                     <p>Overall: {this.state.weather_data.weather}</p>
                 </Col>
                 <Col>

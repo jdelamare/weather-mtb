@@ -1,0 +1,15 @@
+/* Oddly enough, specifying the format caused it to break... */
+@font-face {
+    font-family: 'BreakingWild';
+    src: url('./BreakingWild.ttf');
+  }
+  
+.header {
+    font-family: "BreakingWild" !important;
+    font-size: 50px;
+    color: black
+}
+
+.header:hover {
+    color: grey
+}
