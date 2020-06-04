@@ -1,5 +1,5 @@
 {
-  "Version": "2020-06-02",
+  "Version": "2012-10-17",
   "Statement": [
     {
       "Action": [
@@ -28,7 +28,7 @@
       "Action": [
         "iam:PassRole"
       ],
-      "Resource": "arn:aws:iam::*::role/weathermtb-*",
+      "Resource": "arn:aws:iam::*:role/weathermtb-*",
       "Effect": "Allow"
     }
   ]

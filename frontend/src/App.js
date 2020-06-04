@@ -38,6 +38,7 @@ class App extends React.Component {
         body: JSON.stringify(location),
         headers: { "Content-Type": "application/json" }
       }
+      console.log(options)
       fetch(url, options)
         .then(response => response.json())
         .then(_trails => {

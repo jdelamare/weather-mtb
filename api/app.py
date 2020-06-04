@@ -1,5 +1,5 @@
 from chalice import Chalice
-from .chalicelib import model
+from chalicelib import model
 import requests
 import os
 import json
@@ -44,34 +44,42 @@ def populate_env_vars():
 
 @app.route("/get_trails", methods=["POST"], content_types=["application/json"])
 def get_trails():
+
+    print("_______")
+    print(app.current_request.json_body)
+    print("_______")
+
+
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
     lat_lon = prep_lat_lon(lat, lon)
 
     # query DynamoDB for trails instead of hitting API
-    # index on `lat` + `lon` with precision 3 
-    response = model.select(lat_lon) # if successful returns a dict
+    # response = get_weathermtb_db().select(lat_lon) # if successful returns a dict
 
     # call out to the API since this location is not cached
-    if len(response) == 0: 
-        print("Caling the MTBProject API")
-        params = { 
-            "lat": lat,
-            "lon": lon,
-            "maxDistance": 50, # default is 30, won't get the faves
-            "key": os.getenv("MTBPROJECT_API_KEY")
-        }
+    # if len(response) == 0: 
+    #     print("Calling the MTBProject API")
+    #     params = { 
+    #         "lat": lat,
+    #         "lon": lon,
+    #         "maxDistance": 50, # default is 30, won't get the faves
+    #         "key": os.getenv("MTBPROJECT_API_KEY")
+    #     }
 
-        #by default this returns 10 trails
-        response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
-        response = response.json()
-        # TODO: difference between parsing the string as JSON and the dict returned by model.select() ?
+    #     #by default this returns 10 trails
+    #     # response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
+    #     # response = response.json()
+
+    #     # cache the data for next time
+    #     response_string = json.dumps(response)
+    #     model.insert(lat_lon, response_string)
 
     # Comment out the next four lines for prod
     # Temporary to avoid exceeding requests
-    # response_data = ''
-    # with open("./data/mtb_trails.json") as f:
-    #     response_data = json.loads(f.read())
+    response = ''
+    with open("./data/mtb_trails.json") as f:
+        response = json.loads(f.read())
 
     return [{ 
         "id": trail["id"], 
@@ -170,7 +178,7 @@ def weather():
     # DynamoDB table for weather at a lat_lon
 
     # response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
-    # response = response.json()
+    # response_data = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
@@ -179,6 +187,7 @@ def weather():
         response_data = json.loads(f.read())
 
     # Extract the weather and get the data out
+    # TODO: specify that I want Farenheit at the end of the API call
     max_temp_kelvin = response_data["daily"][0]["temp"]["max"]
     max_temp_faren = round((max_temp_kelvin - 273.15) * 9/5 + 32, 2)
     morn_temp_kelvin = response_data["daily"][0]["temp"]["morn"]

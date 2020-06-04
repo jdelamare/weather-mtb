@@ -7,7 +7,7 @@
       }
     },
     "Resources": {
-      "GuestbookTable": {
+      "WeatherMTBBulkTrailsTable": {
         "Properties": {
           "KeySchema": [
             {
@@ -18,10 +18,6 @@
           "AttributeDefinitions": [
             {
               "AttributeName": "LatLon",
-              "AttributeType": "S"
-            },
-            {
-              "AttributeName": "Trails",
               "AttributeType": "S"
             }
           ],
