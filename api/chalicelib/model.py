@@ -13,14 +13,19 @@ class model():
             A generic exception, prints to STDOUT and returns the string.
         """
         try:
-            ddb_bulk_trails = self.table.get_item(
+            ddb_bulk_trails = self._table.get_item(
                 Key={
-                    'LatLon': lat_lon                   
+                    'latlon': lat_lon                   
                 }
             )
-
             # Items contains a list of dictionaries representing each item
-            return ddb_bulk_trails['Items']
+            print("*****ITEMS*****")
+            print(ddb_bulk_trails)
+            print("***************")
+            if 'Item' not in ddb_bulk_trails:
+                return None
+
+            return ddb_bulk_trails['Item']['doc']
         except Exception as ex:
             print("There's been an error, need to fix this:\n", ex)
             return "It's not you, it's us. :("
@@ -47,6 +52,10 @@ class model():
                     'doc': doc
                 }
             )
+            # print("IN INSERT")
+            # print(latlon)
+            # print(doc)
+
             return None
         except Exception as ex:
             print("There's been an error, need to fix this\n", ex)

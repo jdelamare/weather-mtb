@@ -28,16 +28,13 @@ def get_weathermtb_db():
     global _MTBPROJECT_API_KEY    
     global _WEATHER_API_KEY
 
-    print(os.environ['WEATHERMTB_TABLE_NAME'])
     # if a handle doesn't exist, instantiate a table resource object
-    # if _WEATHERMTB_DB is None:
-    #     _WEATHERMTB_DB = model.model(
-    #         boto3.resource('dynamodb').Table(
+    if _WEATHERMTB_DB is None:
+        _WEATHERMTB_DB = model.model(
+            boto3.resource('dynamodb').Table(
+                # recordresources.py must have been run by here <---- IMPORTANT
+                os.environ['WEATHERMTB_TABLE_NAME'])) 
 
-    #             # recordresources.py must have been run by here <---- IMPORTANT
-    #             os.environ['WEATHERMTB_TABLE_NAME'])) 
-
-    _WEATHERMTB_DB = model.model(boto3.resource('dynamodb').Table('weathermtb-second-WeatherMTBBulkTrailsTable-NHCX8TX1XNVK'))
     return _WEATHERMTB_DB
 
 def populate_env_vars():
@@ -46,42 +43,41 @@ def populate_env_vars():
 
 @app.route("/get_trails", methods=["POST"], content_types=["application/json"])
 def get_trails():
-
-    print("_______")
-    print(app.current_request.json_body)
-    print("_______")
-
-
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
     lat_lon = prep_lat_lon(lat, lon)
+    model = get_weathermtb_db()
 
     # query DynamoDB for trails instead of hitting API
-    # response = get_weathermtb_db().select(lat_lon) # if successful returns a dict
+    response = model.select(lat_lon) # if successful returns a dict
 
     # call out to the API since this location is not cached
-    # if len(response) == 0: 
-    #     print("Calling the MTBProject API")
-    #     params = { 
-    #         "lat": lat,
-    #         "lon": lon,
-    #         "maxDistance": 50, # default is 30, won't get the faves
-    #         "key": os.getenv("MTBPROJECT_API_KEY")
-    #     }
+    if not response:
+        print("Calling the MTBProject API")
+        params = { 
+            "lat": lat,
+            "lon": lon,
+            "maxDistance": 50, # default is 30, won't get the faves
+            "key": os.getenv("MTBPROJECT_API_KEY")
+        }
 
-    #     #by default this returns 10 trails
-    #     # response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
-    #     # response = response.json()
+        #by default this returns 10 trails
+        response = requests.get("https://www.mtbproject.com/data/get-trails", params=params)
+        response = response.json()
 
-    #     # cache the data for next time
-    #     response_string = json.dumps(response)
-    #     model.insert(lat_lon, response_string)
+        print("Finished getting the response from MTBProject API")
+
+        # cache the data for next time
+        response_string = json.dumps(response)
+        model.insert(lat_lon, response_string)
+    else:
+        response = json.loads(response)
 
     # Comment out the next four lines for prod
     # Temporary to avoid exceeding requests
-    response = ''
-    with open("./data/mtb_trails.json") as f:
-        response = json.loads(f.read())
+    # response = ''
+    # with open("./data/mtb_trails.json") as f:
+    #     response = json.loads(f.read())
 
     return [{ 
         "id": trail["id"], 
@@ -110,14 +106,14 @@ def get_favorites():
         "userId": userId
     }
 
-    # response = requests.get("https://www.mtbproject.com/data/get-favorites", params=params)
-    # response_data = response.json()
+    response = requests.get("https://www.mtbproject.com/data/get-favorites", params=params)
+    response_data = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
-    response_data = ''
-    with open('./data/mtb_trails_fav.json') as f:
-        response_data = json.loads(f.read())
+    # response_data = ''
+    # with open('./data/mtb_trails_fav.json') as f:
+    #     response_data = json.loads(f.read())
     
     return [
         trail 
@@ -140,14 +136,14 @@ def get_trails_by_id():
     # query DynamoDB for trails instead of hitting API
     # key is trailId data is for one trail
 
-    # response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=params)
-    # response = response.json()
+    response = requests.get("https://www.mtbproject.com/data/get-trails-by-id", params=params)
+    response = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
-    response = ''
-    with open("./data/mtb_trails_id.json") as f:
-        response = json.loads(f.read())
+    # response = ''
+    # with open("./data/mtb_trails_id.json") as f:
+    #     response = json.loads(f.read())
 
     # potentially cache the rest based on lat/lon
     return [{ 
@@ -171,6 +167,8 @@ def get_trails_by_id():
 def weather():
     # make POST out to `https://api.openweathermap.org/data/2.5/onecall?lat=${LATITUDE}&lon=${LONGITUDE}&exclude=${PART}&appid=${WEATHER_API_KEY}`
 
+    # TODO: dynamoDB cache these requests as well
+
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
     part = app.current_request.json_body["part"]
@@ -179,14 +177,14 @@ def weather():
 
     # DynamoDB table for weather at a lat_lon
 
-    # response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
-    # response_data = response.json()
+    response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
+    response_data = response.json()
 
     # Remove the next four lines for prod
     # Temporary to avoid exceeding requests
-    response_data = ''
-    with open('./data/weather_daily.json') as f:
-        response_data = json.loads(f.read())
+    # response_data = ''
+    # with open('./data/weather_daily.json') as f:
+    #     response_data = json.loads(f.read())
 
     # Extract the weather and get the data out
     # TODO: specify that I want Farenheit at the end of the API call
@@ -206,4 +204,4 @@ def weather():
     }
 
 def prep_lat_lon(lat, lon):
-    return f"{lat:.2f},{lon:2f}"
+    return f"{lat:.2f},{lon:.2f}"

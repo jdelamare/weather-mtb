@@ -42,7 +42,7 @@ def record_as_env_var(stack_name, stage):
             'GOOGLE_MAP_API_KEY'] = os.environ['GOOGLE_MAP_API_KEY']
 
         aws_cloudformation_output = subprocess.run(["aws", "cloudformation","describe-stacks", "--stack-name",
-                                                    "weathermtb-second", "--query", "Stacks[].Outputs"],
+                                                    "weathermtb-fifth", "--query", "Stacks[].Outputs"],
                                                     encoding="utf-8", capture_output=True)
                                                     #"<STACK-NAME-HERE>", "-query", "Stacks[].Outputs"])
         aws_cloudformation_output = json.loads(aws_cloudformation_output.stdout)

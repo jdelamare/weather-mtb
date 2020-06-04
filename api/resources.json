@@ -11,13 +11,13 @@
         "Properties": {
           "KeySchema": [
             {
-              "AttributeName": "LatLon",
+              "AttributeName": "latlon",
               "KeyType": "HASH"
             }
           ],
           "AttributeDefinitions": [
             {
-              "AttributeName": "LatLon",
+              "AttributeName": "latlon",
               "AttributeType": "S"
             }
           ],
