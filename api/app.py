@@ -24,7 +24,7 @@ _WEATHER_API_KEY = None
 _WEATHERMTB_DB = None
 _TRAIL_IDS_TABLE_NAME = None
 _BULK_TABLE_NAME = None
-_USERID_TABLE_NAME = None
+_USER_ID_TABLE_NAME = None
 _WEATHER_TABLE_NAME = None
 
 # recordresources.py must have been run by here <---- IMPORTANT
@@ -32,21 +32,21 @@ def get_weathermtb_db():
     global _WEATHERMTB_DB
     global _TRAIL_IDS_TABLE_NAME
     global _BULK_TABLE_NAME
-    global _USERID_TABLE_NAME
+    global _USER_ID_TABLE_NAME
     global _WEATHER_TABLE_NAME
 
     # Assume that if one table doesn't exist, they all don't exist...
     if _WEATHERMTB_DB is None:
 
         _TRAIL_IDS_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['TRAIL_IDS_TABLE_NAME'])
-        _BULK_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['BULK_TABLE_NAME'])
-        _USERID_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['USERID_TABLE_NAME'])
+        _BULK_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['BULK_TRAILS_TABLE_NAME'])
+        _USER_ID_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['USER_ID_TABLE_NAME'])
         _WEATHER_TABLE_NAME = boto3.resource('dynamodb').Table(os.environ['WEATHER_TABLE_NAME'])
 
         tables = {
             "trail_ids_table_resource": _TRAIL_IDS_TABLE_NAME,
             "bulk_table_resource": _BULK_TABLE_NAME,
-            "userid_table_resource": _USERID_TABLE_NAME,
+            "user_id_table_resource": _USER_ID_TABLE_NAME,
             "weather_table_resource": _WEATHER_TABLE_NAME
         }
 
@@ -58,7 +58,7 @@ def populate_env_vars():
     os.environ['']
 
 
-@app.route("/get_trails", methods=["POST"], content_types=["application/json"])
+@app.route("/get_trails", methods=["POST"], content_types=["application/json"], cors=cors_config)
 def get_trails():
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
@@ -84,11 +84,14 @@ def get_trails():
 
         print("Finished getting the response from MTBProject API")
 
-        # cache the data for next time
-        response = json.dumps(response) # convert response from JSON to string
-        model.insert(_BULK_TABLE_NAME, lat_lon, response)
+        # cache the data as a string for next time
+        response_string = json.dumps(response) 
+        model.insert(_BULK_TABLE_NAME, lat_lon, response_string)
     else:
         response = json.loads(response)
+
+    if "trails" not in response:
+        return {}
 
     return [{ 
         "id": trail["id"], 
@@ -109,13 +112,13 @@ def get_trails():
 
 
 # this should probably be form data
-@app.route("/get_favorites", methods=["POST"], content_types=["application/json"])
+@app.route("/get_favorites", methods=["POST"], content_types=["application/json"], cors=cors_config)
 def get_favorites():
     userId = app.current_request.json_body["userId"]
     model = get_weathermtb_db()
 
     # query DynamoDB for favorites instead of hitting API
-    response = model.select(_USERID_TABLE_NAME, userId) # if successful returns a dict
+    response = model.select(_USER_ID_TABLE_NAME, userId) # if successful returns a dict
     
     if not response:
         print("Calling the MTBProject API for favorites...")
@@ -128,11 +131,14 @@ def get_favorites():
 
         print("Finished getting the response from MTBProject API")
 
-        # cache the data for next time
-        response = json.dumps(response) # convert response from JSON to string
-        model.insert(_USERID_TABLE_NAME, userId, response)
+        # cache the data as a string for next time
+        response_string = json.dumps(response) # convert response from JSON to string
+        model.insert(_USER_ID_TABLE_NAME, userId, response_string)
     else:
         response = json.loads(response)
+
+    if "toDos" not in response:
+        return {}
 
     return [
         trail 
@@ -141,7 +147,7 @@ def get_favorites():
 
 # TODO probably should have a try catch return 40X error couldn't find json_body
 # TODO document that this function is coupled with get_favorites since it only returns trailIds
-@app.route("/get_trail_by_id", methods=["POST"], content_types=["application/json"])
+@app.route("/get_trail_by_id", methods=["POST"], content_types=["application/json"], cors=cors_config)
 def get_trails_by_id():
     ids = app.current_request.json_body["ids"]
     ids = ",".join(str(trail_id) for trail_id in ids)
@@ -164,10 +170,13 @@ def get_trails_by_id():
         print("Finished getting the response from MTBProject API")
 
         # cache the data for next time
-        response = json.dumps(response) # convert response from JSON to string
-        model.insert(_TRAIL_IDS_TABLE_NAME, ids, response)
+        response_string = json.dumps(response) # convert response from JSON to string
+        model.insert(_TRAIL_IDS_TABLE_NAME, ids, response_string)
     else:
         response = json.loads(response)
+
+    if "trails" not in response:
+        return {}
 
     return [{ 
         "id": trail["id"], 
@@ -187,7 +196,7 @@ def get_trails_by_id():
         for trail in response["trails"]]
 
 # make POST out to `https://api.openweathermap.org/data/2.5/onecall?lat=${LATITUDE}&lon=${LONGITUDE}&exclude=${PART}&appid=${WEATHER_API_KEY}`
-@app.route("/weather", methods=["POST"], content_types=["application/json"])
+@app.route("/weather", methods=["POST"], content_types=["application/json"], cors=cors_config)
 def weather():
     lat = app.current_request.json_body["lat"]
     lon = app.current_request.json_body["lon"]
@@ -202,26 +211,29 @@ def weather():
         key = os.getenv("WEATHER_API_KEY")
         url = f"https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={part}&appid={key}" 
 
-        response = requests.get("https://api.openweathermap.org/data/2.5/onecall", params=params)
-        response_data = response.json()
+        response = requests.get(url)
+        response = response.json()
 
         print("Finished getting data from OpenWeather API")
 
         # cache the data for next time
-        response = json.dumps(response) # convert response from JSON to string
-        model.insert(_WEATHER_TABLE_NAME, lat_lon, response)
+        response_string = json.dumps(response) # convert response from JSON to string
+        model.insert(_WEATHER_TABLE_NAME, lat_lon, response_string)
     else:
         response = json.loads(response)
 
+    if "daily" not in response:
+        return {}
+
     # Extract the weather and get the data out
     # TODO: Move this calculation to the frontend
-    max_temp_kelvin = response_data["daily"][0]["temp"]["max"]
+    max_temp_kelvin = response["daily"][0]["temp"]["max"]
     max_temp_faren = round((max_temp_kelvin - 273.15) * 9/5 + 32, 2)
-    morn_temp_kelvin = response_data["daily"][0]["temp"]["morn"]
+    morn_temp_kelvin = response["daily"][0]["temp"]["morn"]
     morn_temp_faren = round((max_temp_kelvin - 273.15) * 9/5 + 32, 2)
 
-    weather = response_data["daily"][0]["weather"][0]["main"]
-    weather_icon = response_data["daily"][0]["weather"][0]["icon"]
+    weather = response["daily"][0]["weather"][0]["main"]
+    weather_icon = response["daily"][0]["weather"][0]["icon"]
 
     return {
         "max_temp_faren": max_temp_faren,

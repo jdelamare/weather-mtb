@@ -2,7 +2,7 @@ class model():
     def __init__(self, tables):
         self._trail_ids_table = tables["trail_ids_table_resource"]
         self._bulk_table = tables["bulk_table_resource"]
-        self._userid_table = tables["userid_table_resource"]
+        self._userid_table = tables["user_id_table_resource"]
         self._weather_table = tables["weather_table_resource"]
 
     def select(self, table_name, key):
