@@ -1,2 +1,3 @@
-.chalice/deploy*
+.chalice/deployments/
+.chalice/deployed/
 .chalice/venv/
