@@ -18,10 +18,7 @@ class model():
                     'latlon': lat_lon                   
                 }
             )
-            # Items contains a list of dictionaries representing each item
-            print("*****ITEMS*****")
-            print(ddb_bulk_trails)
-            print("***************")
+            # Item contains a list of dictionaries representing each item
             if 'Item' not in ddb_bulk_trails:
                 return None
 
@@ -52,11 +49,9 @@ class model():
                     'doc': doc
                 }
             )
-            # print("IN INSERT")
-            # print(latlon)
-            # print(doc)
 
             return None
+
         except Exception as ex:
             print("There's been an error, need to fix this\n", ex)
             return "It's not you, it's us. :("

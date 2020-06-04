@@ -1,33 +1,79 @@
 {
-    "Outputs": {
-      "WeatherMTBBulkTrailsTableName": {
-        "Value": {
-          "Ref": "WeatherMTBBulkTrailsTable"
-        }
+  "Outputs": {
+    "BulkTrailsTableName": {
+      "Value": {
+        "Ref": "BulkTrailsTable"
       }
     },
-    "Resources": {
-      "WeatherMTBBulkTrailsTable": {
-        "Properties": {
-          "KeySchema": [
-            {
-              "AttributeName": "latlon",
-              "KeyType": "HASH"
-            }
-          ],
-          "AttributeDefinitions": [
-            {
-              "AttributeName": "latlon",
-              "AttributeType": "S"
-            }
-          ],
-          "ProvisionedThroughput": {
-            "ReadCapacityUnits": 1,
-            "WriteCapacityUnits": 1
-          }
-        },
-         "Type": "AWS::DynamoDB::Table"
+    "UserIdTableName": {
+      "Value": {
+        "Ref": "UserIdTable"
       }
-    } 
-  }
-  
+    }
+  },
+  "Resources": {
+    "BulkTrailsTable": {
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "latlon",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "latlon",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Type": "AWS::DynamoDB::Table"
+    },
+    "UserIdTable": {
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "userid",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "userid",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Type": "AWS::DynamoDB::Table"
+    },
+    "WeatherTable": {
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "latlon",
+            "KeyType": "HASH"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "latlon",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 1,
+          "WriteCapacityUnits": 1
+        }
+      },
+      "Type": "AWS::DynamoDB::Table"
+    }
+  } 
+}
