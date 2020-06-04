@@ -7,33 +7,27 @@ import './style/TrailList.css'
 class TrailList extends Component {
 
     getBorder(trail) {
-        if (trail.conditionStatus.includes("All Clear")) 
-        {
+        if (trail.conditionStatus.includes("All Clear")) {
             return "success"
         } 
-        else if (trail.conditionStatus.includes("Closed")) 
-        {
+        else if (trail.conditionStatus.includes("Closed")) {
             return "danger"
         } 
-        else 
-        {
+        else {
             return "info"
         }
     }
 
     // set to epoch if null, so return empty string
-    getConditionDate(trail) 
-    {
-        if (trail.conditionDate === "1970-01-01 00:00:00") 
-        {
+    getConditionDate(trail) {
+        if (trail.conditionDate === "1970-01-01 00:00:00") {
             return ""
         }
 
         return "Last Updated: " + trail.conditionDate
     }
 
-    handleCardClick(lat, lon, idx) 
-    {
+    handleCardClick(lat, lon, idx) {
         let coords = {
             lat: lat,
             lon: lon
@@ -42,8 +36,7 @@ class TrailList extends Component {
     }
 
 
-    render() 
-    {
+    render() {
         return (
             <div>
                 {this

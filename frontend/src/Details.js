@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col'
-
+import Nav from 'react-bootstrap/Nav'
 import Query from './Query'
 import BarChart from './BarChart'
 import StarRating from './StarRating'
@@ -36,51 +36,58 @@ class Details extends Component {
     render() 
     {
         return (
-            <div>
-                <Row id="row1">
-                    <Col>
-                        <Query 
-                            buttonClick={this.props.buttonClick}/>
-                    </Col>
+          <div>
+            <Row>
+              <Col>
+                <Nav className="justify-content-center">
+                  <Nav.Link>
+                    <div class="header">
+                      WeatherMTB
+                    </div>
+                  </Nav.Link>
+                </Nav>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Query buttonClick={this.props.buttonClick}/>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Row>
+                  <Col>
+                    <Summary trailData={this.props.trailData}/>
+                  </Col>
+                  <Col>
+                    <Weather coords={{lat: this.props.trailData.lat, lon: this.props.trailData.lon}}/>
+                  </Col>
                 </Row>
                 <Row>
-                    <Col>
-                        <Row id="row2">
-                            <Col>
-                                <Summary trailData={this.props.trailData}/>
-                            </Col>
-                            <Col>
-                                <Weather coords={{lat: this.props.trailData.lat, lon: this.props.trailData.lon}}/>
-                            </Col>
-                        </Row>
-                        <Row id="row3">
-                            <Col>
-                                <BarChart 
-                                    trailData={this.props.trailData}/>
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Col>
-                                        <br />
-                                        Rating
-                                        <br />
-                                        <br />
-                                        <StarRating 
-                                            rating={this.state.rating}/>
-                                    </Col>
-                                    <Col>
-                                        <br />
-                                        <div>Difficulty</div>
-                                        <br />
-                                        <Difficulty 
-                                            difficulty={this.state.difficulty}/>
-                                    </Col>
-                                </Row>
-                            </Col>
-                        </Row>
-                    </Col>
+                  <Col>
+                    <BarChart trailData={this.props.trailData}/>
+                  </Col>
+                  <Col>
+                    <Row>
+                      <Col>
+                        <br />
+                        Rating
+                        <br />
+                        <br />
+                        <StarRating rating={this.state.rating}/>
+                      </Col>
+                      <Col>
+                        <br />
+                        <div>Difficulty</div>
+                        <br />
+                        <Difficulty difficulty={this.state.difficulty}/>
+                      </Col>
+                    </Row>
+                  </Col>
                 </Row>
-            </div>
+              </Col>
+            </Row>
+          </div>
         )
     }
 }
