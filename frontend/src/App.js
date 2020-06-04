@@ -28,7 +28,7 @@ class App extends React.Component {
         lat: position.coords.latitude,
         lon: position.coords.longitude
       })
-      let url = "get_trails";  // Where does the rest of the URL go?
+      let url = BASE_URL + "get_trails";  // TODO auto replace with full backend URL on deploy
       let location = {
         lat: this.state.lat,
         lon: this.state.lon
@@ -67,8 +67,9 @@ class App extends React.Component {
 
   // my MTBProject userid 200740835
   // if button is clicked, update state
+  // TODO this could be refactored
   buttonClick() {
-    let url_favorites = "get_favorites"
+    let url_favorites =  BASE_URL + "get_favorites"  // TODO auto replace with full backend URL on deploy
     let _userid = document.getElementById("query").value
     // in lieu of JS, we'll just let other backend deal with bad userid
     if (_userid === "") 
@@ -76,7 +77,7 @@ class App extends React.Component {
       return
     }
     let userId = {
-      userId: _userid
+      userId: `${_userid}`
     }
     let options_favorites = {
       method: "POST",
@@ -87,9 +88,9 @@ class App extends React.Component {
     fetch(url_favorites, options_favorites)
       .then(response => response.json())
       .then(trail_ids => {
-        let url_by_id = "get_trail_by_id"
+        let url_by_id = BASE_URL + "get_trail_by_id"  // TODO auto replace with full backend URL on deploy
         let ids = {
-          ids: trail_ids
+          ids: trail_ids 
         }
         let options_by_id = {
           method: "POST",
@@ -100,6 +101,9 @@ class App extends React.Component {
       })
       .then(response => response.json())
       .then(_trails => {
+        if (_trails.length === 0) {
+          return
+        }
         // Point of optimization here, no need to rerender if the same trails are displayed
         this.setState({
           trails: _trails

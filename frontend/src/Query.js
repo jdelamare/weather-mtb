@@ -29,7 +29,7 @@ class Query extends Component {
                         <Button 
                             variant="outline-secondary" 
                             onClick={this.props.buttonClick}>
-                            Button
+                            Get Favorite Trails
                         </Button>
                     </InputGroup.Append>
                 </InputGroup>

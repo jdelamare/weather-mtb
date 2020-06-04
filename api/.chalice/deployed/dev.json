@@ -1,0 +1,23 @@
+{
+  "resources": [
+    {
+      "name": "api_handler_role",
+      "resource_type": "iam_role",
+      "role_arn": "arn:aws:iam::207667884712:role/weathermtb-dev-api_handler",
+      "role_name": "weathermtb-dev-api_handler"
+    },
+    {
+      "name": "api_handler",
+      "resource_type": "lambda_function",
+      "lambda_arn": "arn:aws:lambda:us-east-1:207667884712:function:weathermtb-dev"
+    },
+    {
+      "name": "rest_api",
+      "resource_type": "rest_api",
+      "rest_api_id": "fd0tr7672h",
+      "rest_api_url": "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/"
+    }
+  ],
+  "schema_version": "2.0",
+  "backend": "api"
+}

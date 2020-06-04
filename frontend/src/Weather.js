@@ -16,7 +16,7 @@ class Weather extends Component {
         if (this.props.coords.lat !== prevProps.coords.lat || this.props.coords.lon !== prevProps.coords.lon) {
             
             // TODO: This is wrong.. supposed to hit backend not the API directly
-            let url = "weather"
+            let url = BASE_URL + "weather"
             let payload = {
                 lat: this.props.coords.lat,
                 lon: this.props.coords.lon,
