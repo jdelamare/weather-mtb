@@ -4,7 +4,9 @@
   "stages": {
     "dev": {
       "api_gateway_stage": "weathermtb",
-      "autogen_policy": false
+      "autogen_policy": false,
+      "environment_variables": {
+      }
     }
   }
 }

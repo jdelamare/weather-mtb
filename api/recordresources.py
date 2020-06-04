@@ -1,7 +1,7 @@
 import argparse
 import json
 import os
-
+import subprocess
 import boto3
 from botocore import xform_name
 
@@ -40,6 +40,16 @@ def record_as_env_var(stack_name, stage):
  
         data['stages'][stage]['environment_variables'][
             'GOOGLE_MAP_API_KEY'] = os.environ['GOOGLE_MAP_API_KEY']
+
+        aws_cloudformation_output = subprocess.run(["aws", "cloudformation","describe-stacks", "--stack-name",
+                                                    "weathermtb-second", "--query", "Stacks[].Outputs"],
+                                                    encoding="utf-8", capture_output=True)
+                                                    #"<STACK-NAME-HERE>", "-query", "Stacks[].Outputs"])
+        aws_cloudformation_output = json.loads(aws_cloudformation_output.stdout)
+        table_name = aws_cloudformation_output[0][0]["OutputValue"] # perhaps adding more table names won't be too tough...
+        data['stages'][stage]['environment_variables'][
+            'WEATHERMTB_TABLE_NAME'] = table_name
+        
 
     with open(os.path.join('.chalice', 'config.json'), 'w') as f:
         serialized = json.dumps(data, indent=2, separators=(',', ': '))

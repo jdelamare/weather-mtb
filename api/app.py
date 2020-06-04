@@ -28,14 +28,16 @@ def get_weathermtb_db():
     global _MTBPROJECT_API_KEY    
     global _WEATHER_API_KEY
 
+    print(os.environ['WEATHERMTB_TABLE_NAME'])
     # if a handle doesn't exist, instantiate a table resource object
-    if _WEATHERMTB_DB is None:
-        _WEATHERMTB_DB = model.model(
-            boto3.resource('dynamodb').Table(
+    # if _WEATHERMTB_DB is None:
+    #     _WEATHERMTB_DB = model.model(
+    #         boto3.resource('dynamodb').Table(
 
-                # recordresources.py must have been run by here <---- IMPORTANT
-                os.environ['WEATHERMTB_TABLE_NAME'])) 
+    #             # recordresources.py must have been run by here <---- IMPORTANT
+    #             os.environ['WEATHERMTB_TABLE_NAME'])) 
 
+    _WEATHERMTB_DB = model.model(boto3.resource('dynamodb').Table('weathermtb-second-WeatherMTBBulkTrailsTable-NHCX8TX1XNVK'))
     return _WEATHERMTB_DB
 
 def populate_env_vars():
