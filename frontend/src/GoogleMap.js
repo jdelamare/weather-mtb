@@ -1,6 +1,12 @@
 import React, { Component, createRef } from 'react'
 
-// TODO Remove this and push to the backend
+// My take on this particular API key is as follows:
+// Yes, it's bad practice to put an API key in the code. It's not in the repository
+// where the code is hosted. But the only alternative (when hosting out of S3), would
+// be to make a call to the backend to get the API key before use. But that's too much
+// overhead. As it stands, unless I ship back the map data (clueless how to), an end 
+// user would be able to sniff this key in transit anyways- it's in your plaintext 
+// request. So the justification is that it stays here and I rate limit in GCP.
 const GOOGLE_MAP_API_KEY = ''
 
 class GoogleMap extends Component {
