@@ -91,6 +91,12 @@ These resources greatly assisted in my understanding:
 #### MTB
 * ![MTB](https://www.mtbproject.com/data)
 
+#### OpenWeatherAPI
+* ![OpenWeatherAPI](https://openweathermap.org/api)
+
+#### Google Maps
+* ![Google Maps](https://developers.google.com/maps/documentation)
+
 #### Grid design
 * ![material-ui](https://material-ui.com/components/grid/)
 
