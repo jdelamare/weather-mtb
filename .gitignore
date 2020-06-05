@@ -2,6 +2,7 @@
 
 # local data
 api/data
+api/.chalice/deployed
 
 # dependencies
 frontend/node_modules
