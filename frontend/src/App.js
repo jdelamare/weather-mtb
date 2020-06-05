@@ -12,10 +12,10 @@ class App extends React.Component {
     constructor() {
         super()
         this.state = {
-            trails: [],
+            trails: [], // the main source of data passed down throughout
             lat: 0, // could refactor away these and just use trail data
             lon: 0,
-            focusTrail: 0
+            focusTrail: 0 // indicates the data shown in Details
         }
         this.buttonClick = this.buttonClick.bind(this)
         this.cardClick = this.cardClick.bind(this)

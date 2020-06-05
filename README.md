@@ -47,7 +47,24 @@ These six steps should get you off the ground (assuming you've got the correct A
  6. `chalice deploy`
 
 ### Local Development
-For this to work you'll need to have an AWS account with valid credentials in ~/.aws.credentials`. It can also be simulated with text files (if need be, feel free to email me). But those credentials are necessary to setup the CloudFormation stack.
+For this to work you'll need to have an AWS account with valid credentials in `~/.aws.credentials`. It can also be simulated with text files (if need be, feel free to email me). But those credentials are necessary to setup the CloudFormation stack. You'll need to add the following line to the very bottom of `./frontend/package.json`:
+```
+  },
+  "proxy": "http://localhost:8000"
+}
+```
+
+Spawn two shells.
+ 1. `cd ./frontend`
+ 2. `npm start`
+
+ 1. `virtualenv -p python3 venv`
+ 2. `source venv/bin/activate`
+ 3. `pip install -r requirements.txt`
+ 4. `aws cloudformation deploy --template-file resources.json --stack-name weathermtb`
+ 5. `chalice local`
+
+Note the difference between this and **Deploy** is that we won't need to setup the IAM and Lambdas which would require `config.json` and `policy-dev.json`.
 
 ### Issues
 I just realized that I didn't trim the decimal values off of the temperature. It's also pretty poorly responsive. In hindsight I should have focused more on the frontend stacking cards and putting data in them if the app shrinks. Apologies there, but I've got some terrific feedback on version 0.0.1 from friends and family. `chart.js` does not want to cooperate with staying in the `react-boostrap Col`. Not sure what to make of that. Shrinking the Map will necessary in the future.
