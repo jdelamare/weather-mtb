@@ -28,7 +28,7 @@ class App extends React.Component {
             lat: position.coords.latitude,
             lon: position.coords.longitude
         })
-        let url = "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_trails";  // TODO auto replace with full backend URL on deploy
+        let url = "get_trails";  // TODO BASE URL
         let location = {
             lat: this.state.lat,
             lon: this.state.lon
@@ -68,7 +68,7 @@ class App extends React.Component {
   
     // if button is clicked, update state
     buttonClick() {
-        let url_favorites =  "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_favorites"  // TODO auto replace with full backend URL on deploy
+        let url_favorites =  "get_favorites"  // TODO BASE URL
         let _userid = document.getElementById("query").value
         // TODO this could be refactored
         // in lieu of JS, we'll just let other backend deal with bad userid
@@ -87,7 +87,7 @@ class App extends React.Component {
         fetch(url_favorites, options_favorites)
             .then(response => response.json())
             .then(trail_ids => {
-                let url_by_id = "https://fd0tr7672h.execute-api.us-east-1.amazonaws.com/weathermtb/get_trail_by_id"  // TODO auto replace with full backend URL on deploy
+                let url_by_id = "get_trail_by_id"  // TODO BASE URL
                 let ids = {
                     ids: trail_ids 
                 }

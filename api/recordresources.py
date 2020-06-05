@@ -10,7 +10,7 @@ def record_as_env_var(stack_name, stage):
 
     # Get stack info (want table name and value)
     session = boto3.Session()#profile_name='vocareum')
-    cloudformation = session.client('cloudformation')
+    cloudformation = session.client('cloudformation', region_name='us-west-2')
     response = cloudformation.describe_stacks(
         StackName=stack_name
     )
